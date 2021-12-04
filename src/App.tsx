@@ -10,7 +10,6 @@ function App() {
     <div className="App">
       <Navbar />
       <AddAccountForm />
-      <h1>hello</h1>
     </div>
   );
 }

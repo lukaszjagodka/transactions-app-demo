@@ -21,6 +21,7 @@ import List from '@mui/material/List';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { createAccountActionCreator } from './accountsSlice';
+import { selectAccountActionCreator } from './selectedAccountSlice';
 import { initialStateOfArray } from '../../helpers/initialState';
 import { generateAccountNumber, generateAccountName } from '../../helpers/generateAccountDate';
 
@@ -29,8 +30,8 @@ import { IAccount, IState } from '../../types.d';
 const AddAccountForm = function () {
   const dispatch = useDispatch();
   const accounts = useSelector((state: IState) => state.accounts);
-  const [open, setOpen] = React.useState(true);
-  const [list, setList] = React.useState(false);
+  const [open, setOpen] = React.useState<boolean>(true);
+  const [list, setList] = React.useState<boolean>(false);
   const [listOfAccounts, setListOfAccounts] = React.useState<Array<IAccount>>(initialStateOfArray);
   const initialStateByAccountNumber = generateAccountNumber;
   const [numberAcc, setNumberAcc] = React.useState<number>(initialStateByAccountNumber);
@@ -48,7 +49,6 @@ const AddAccountForm = function () {
     setAccountName(generateAccountName);
     setNumberAcc(generateAccountNumber);
   };
-
   const handleCreateNewAcc = () => {
     setList(false);
     setOpen(true);
@@ -64,10 +64,8 @@ const AddAccountForm = function () {
       setList(true);
     }
   };
-
   const handleSetAccountBalance = (e: any) => {
     const target = e.target as HTMLTextAreaElement;
-    // eslint-disable-next-line no-unused-expressions
     if (matchExpression(target.value) === false) {
       setHelperText('Invalid format. Only number.');
       setError(true);
@@ -77,20 +75,21 @@ const AddAccountForm = function () {
       setAccountBalance(e.target.value);
     }
   };
-  const handleShowAccount = (acc: Object) => {
+  const handleShowAccount = (acc: any) => {
     // send choosen account to redux
     console.log(acc);
+    dispatch(selectAccountActionCreator({ id: acc.id }));
   };
-
-  function matchExpression(str: any) {
+  const matchExpression = (str: any) => {
     const rgularExp = {
       onlyNumbers: /^[0-9]+$/,
     };
     return rgularExp.onlyNumbers.test(str);
-  }
+  };
   const handleClose = () => {
     setList(true);
   };
+
   return (
     <div>
       {list

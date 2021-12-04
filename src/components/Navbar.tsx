@@ -14,6 +14,7 @@ const styles = {
     fontSize: '22px',
     display: 'flex',
     fontWeight: 'bold',
+    color: 'white',
   },
 } as const;
 

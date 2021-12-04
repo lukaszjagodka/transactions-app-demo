@@ -8,8 +8,6 @@ import logger from 'redux-logger';
 import { reducer } from './reducers';
 import App from './App';
 
-// import { store } from './components/accounts/accountsSlice';
-
 const store = configureStore({
   reducer,
   middleware: [logger],

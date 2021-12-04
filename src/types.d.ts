@@ -6,4 +6,5 @@ export interface IAccount {
 
 export interface IState {
   accounts: Array<IAccount>,
+  selectedAccount: string | null;
 }
