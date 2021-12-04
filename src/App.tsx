@@ -2,7 +2,7 @@
 /* eslint-disable react/function-component-definition */
 import React from 'react';
 import './App.css';
-import AddAccountForm from './components/AddAccountForm';
+import AddAccountForm from './components/accounts/AddAccountForm';
 import Navbar from './components/Navbar';
 
 function App() {

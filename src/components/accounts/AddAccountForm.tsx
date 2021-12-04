@@ -19,16 +19,16 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 
-import { initialStateOfArray } from '../helpers/initialState';
-import { generateAccountNumber, generateAccountName } from '../helpers/generateAccountDate';
+import { useSelector, useDispatch } from 'react-redux';
+import { createAccountActionCreator } from './accountsSlice';
+import { initialStateOfArray } from '../../helpers/initialState';
+import { generateAccountNumber, generateAccountName } from '../../helpers/generateAccountDate';
 
-interface IAccount {
-  id: string,
-  accNumber: number,
-  accValue: number
-}
+import { IAccount, IState } from '../../types.d';
 
 const AddAccountForm = function () {
+  const dispatch = useDispatch();
+  const accounts = useSelector((state: IState) => state.accounts);
   const [open, setOpen] = React.useState(true);
   const [list, setList] = React.useState(false);
   const [listOfAccounts, setListOfAccounts] = React.useState<Array<IAccount>>(initialStateOfArray);
@@ -54,11 +54,12 @@ const AddAccountForm = function () {
     setOpen(true);
   };
   const handleAddAcc = () => {
-    if (!error) {
+    if (!error && accBalance !== 0 && Number(accBalance) !== 0) {
       setOpen(false);
       const newAccount: IAccount = { id: accountName, accNumber: numberAcc, accValue: Number(accBalance) };
-      console.log(accBalance);
       setListOfAccounts([...listOfAccounts, newAccount]);
+      dispatch(createAccountActionCreator(newAccount));
+      setAccountBalance(0);
       handleNewRandom();
       setList(true);
     }
@@ -66,6 +67,7 @@ const AddAccountForm = function () {
 
   const handleSetAccountBalance = (e: any) => {
     const target = e.target as HTMLTextAreaElement;
+    // eslint-disable-next-line no-unused-expressions
     if (matchExpression(target.value) === false) {
       setHelperText('Invalid format. Only number.');
       setError(true);
@@ -75,7 +77,7 @@ const AddAccountForm = function () {
       setAccountBalance(e.target.value);
     }
   };
-  const handleShowAccount = (acc: any) => {
+  const handleShowAccount = (acc: Object) => {
     // send choosen account to redux
     console.log(acc);
   };
