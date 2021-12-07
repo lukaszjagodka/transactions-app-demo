@@ -5,6 +5,8 @@ export interface IAccount {
 }
 
 export interface IState {
-  accounts: Array<IAccount>,
-  selectedAccount: IAccount
+  accounts: {
+    accounts: Array<IAccount>,
+    selectedAccount: IAccount
+  }
 }
