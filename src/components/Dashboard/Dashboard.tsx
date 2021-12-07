@@ -1,3 +1,5 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-undef */
 /* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable max-len */
@@ -6,8 +8,10 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Routes, Route, useParams } from 'react-router-dom';
+import { connect, useSelector } from 'react-redux';
+import {
+  Routes, Route, useParams, Navigate,
+} from 'react-router-dom';
 import ListOfAccounts from '../accounts/ListOfAccounts';
 import Navbar from '../Navbar';
 import { IState, IAccount } from '../../types.d';
@@ -28,23 +32,26 @@ class Dashboard extends Component <TProps, TState> {
     this.state = {};
   }
 
+  AccDashVerif = () => {
+    const params = useParams();
+    const { accountId } = params;
+    const accountsss = useSelector((state: IState) => state.accounts.accounts);
+    const selA = useSelector((state: IState) => state.accounts.selectedAccount);
+    if (accountId === selA.id) {
+      return <AccountDash acc={accountId} />;
+    }
+    return <Navigate replace to="/" />;
+  };
+
   render() {
     const { accounts, selectedAccount } = this.props.accounts;
     return (
       <div>
         <Navbar />
         <Routes>
-          <Route path="/a/:accountId" element={<AccountDash />} />
-          {/* {!(selectedAccount.id.length < 2) ? <h2>{`${selectedAccount.id} ${selectedAccount.accNumber} ${selectedAccount.accValue}`}</h2> : ''} */}
-          {/* {accounts.map((account) => <h4 key={account.id}>{account.id}</h4>)} */}
-          <Route
-            path="*"
-            element={(
-              <main style={{ padding: '1rem' }}>
-                <p>Theres nothing here!</p>
-              </main>
-            )}
-          />
+          <Route path="/a/:accountId" element={<this.AccDashVerif />} />
+          <Route path="/" element={<div />} />
+          <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>
         <ListOfAccounts />
       </div>
