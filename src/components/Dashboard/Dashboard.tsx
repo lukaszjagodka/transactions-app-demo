@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable max-len */
 /* eslint-disable react/no-unused-state */
@@ -6,10 +7,11 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Routes, Route, useParams } from 'react-router-dom';
 import ListOfAccounts from '../accounts/ListOfAccounts';
 import Navbar from '../Navbar';
-
 import { IState, IAccount } from '../../types.d';
+import AccountDash from '../AccountDash';
 
 type TProps = {
   accounts: {
@@ -31,9 +33,19 @@ class Dashboard extends Component <TProps, TState> {
     return (
       <div>
         <Navbar />
-        {!(selectedAccount.id.length < 2) ? <h2>{`${selectedAccount.id} ${selectedAccount.accNumber} ${selectedAccount.accValue}`}</h2> : ''}
-        <button type="button" onClick={() => this.forceUpdate()}>click</button>
-        {/* {accounts.map((account) => <h4 key={account.id}>{account.id}</h4>)} */}
+        <Routes>
+          <Route path="/a/:accountId" element={<AccountDash />} />
+          {/* {!(selectedAccount.id.length < 2) ? <h2>{`${selectedAccount.id} ${selectedAccount.accNumber} ${selectedAccount.accValue}`}</h2> : ''} */}
+          {/* {accounts.map((account) => <h4 key={account.id}>{account.id}</h4>)} */}
+          <Route
+            path="*"
+            element={(
+              <main style={{ padding: '1rem' }}>
+                <p>Theres nothing here!</p>
+              </main>
+            )}
+          />
+        </Routes>
         <ListOfAccounts />
       </div>
     );

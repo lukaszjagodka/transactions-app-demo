@@ -4,6 +4,7 @@ import React from 'react';
 import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
 import { useDispatch } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { selectAccountActionCreator } from './accountsSlice';
 
 type TProps = {
@@ -26,10 +27,12 @@ const ShowList = function (props: TProps) {
 
   const { acc } = props;
   return (
-    <ListItem component="span" key={acc.id} button>
-      <ListItemText primary={acc.id} secondary={acc.accNumber} onClick={() => handleShowAccount(acc)} />
-      <div style={{ right: '15px' }}>{acc.accValue}</div>
-    </ListItem>
+    <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/a/${acc.id}`}>
+      <ListItem component="span" key={acc.id} button>
+        <ListItemText primary={acc.id} secondary={acc.accNumber} onClick={() => handleShowAccount(acc)} />
+        <div style={{ right: '15px' }}>{acc.accValue}</div>
+      </ListItem>
+    </NavLink>
   );
 };
 

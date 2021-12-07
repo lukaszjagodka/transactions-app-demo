@@ -40,7 +40,7 @@ const ListOfAccounts = function () {
   };
 
   const handleCloseList = (e: any) => {
-    setList(true); // do testów
+    setList(false); // do testów
     // setList(e); docelowo => false
   };
 
