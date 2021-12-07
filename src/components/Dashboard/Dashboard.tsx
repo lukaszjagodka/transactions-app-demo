@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable max-len */
 /* eslint-disable react/no-unused-state */
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
@@ -10,35 +12,28 @@ import Navbar from '../Navbar';
 import { IState, IAccount } from '../../types.d';
 
 type TProps = {
-  selected: IAccount,
-  accounts: Array<IAccount>,
+  accounts: {
+    selectedAccount: IAccount,
+    accounts: Array<IAccount>,
+  }
 }
 
-type TState = {
- sele: Object
-}
+type TState = {}
 
 class Dashboard extends Component <TProps, TState> {
   constructor(props: any) {
     super(props);
-    this.state = {
-      sele: {},
-    };
-  }
-
-  componentDidUpdate() {
-    const { selected, accounts } = this.props;
-    console.log(selected, accounts);
+    this.state = {};
   }
 
   render() {
-    const { selected, accounts } = this.props;
+    const { accounts, selectedAccount } = this.props.accounts;
     return (
       <div>
         <Navbar />
-        {accounts.map((account) => <h4 key={account.id}>{account.id}</h4>)}
-        {selected === undefined ? <h2>UNDEFINED</h2> : 'selected'}
+        {!(selectedAccount.id.length < 2) ? <h2>{`${selectedAccount.id} ${selectedAccount.accNumber} ${selectedAccount.accValue}`}</h2> : ''}
         <button type="button" onClick={() => this.forceUpdate()}>click</button>
+        {/* {accounts.map((account) => <h4 key={account.id}>{account.id}</h4>)} */}
         <ListOfAccounts />
       </div>
     );
@@ -46,7 +41,6 @@ class Dashboard extends Component <TProps, TState> {
 }
 
 const mapStateToProps = (state: IState) => ({
-  selected: state.selectedAccount,
   accounts: state.accounts,
 });
 

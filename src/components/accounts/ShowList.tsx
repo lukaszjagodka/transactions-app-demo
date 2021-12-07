@@ -4,7 +4,7 @@ import React from 'react';
 import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
 import { useDispatch } from 'react-redux';
-import { selectAccountActionCreator } from './selectedAccountSlice';
+import { selectAccountActionCreator } from './accountsSlice';
 
 type TProps = {
   acc: any,

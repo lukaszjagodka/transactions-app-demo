@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-concat */
 /* eslint-disable no-shadow */
 /* eslint-disable array-callback-return */
@@ -20,12 +21,10 @@ import { IAccount, IState } from '../../types.d';
 import ShowList from './ShowList';
 
 const ListOfAccounts = function () {
-  const accounts = useSelector((state: IState) => state.accounts);
+  const accounts = useSelector((state: IState) => state.accounts.accounts);
   const [list, setList] = React.useState<boolean>(true);
   const [addForm, setAddForm] = React.useState<boolean>(false);
-
-  const [listOfAccounts, setListOfAccounts] = React.useState<Array<IAccount>>(accounts);
-
+  const [listOfAccounts, setListOfAccounts] = React.useState<IAccount[]>(accounts);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -67,12 +66,12 @@ const ListOfAccounts = function () {
               <List component="span">
                 {
                   accounts.length < 3 ? (
-                    listOfAccounts.slice(0).reverse().map((acc) => (
-                      <ShowList acc={acc} closeList={handleCloseList} />
+                    listOfAccounts.slice(0).reverse().map((acc: any) => (
+                      <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
                     ))
                   ) : (
-                    accounts.slice(0).reverse().map((acc) => (
-                      <ShowList acc={acc} closeList={handleCloseList} />
+                    accounts.slice(0).reverse().map((acc: any) => (
+                      <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
                     ))
                   )
                 }
