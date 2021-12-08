@@ -27,6 +27,16 @@ export const accountsSlice = createSlice({
   initialState: newIni,
   reducers: {
     create: (state, { payload }: PayloadAction<{ id: string, accNumber: number, accValue: number }>) => {
+      const accLS: string | null = localStorage.getItem('accounts');
+      if (accLS === null) {
+        localStorage.setItem('accounts', JSON.stringify([...newIni.accounts, payload]));
+      } else {
+        const retrievedAccObject: string | null = localStorage.getItem('accounts');
+        if (retrievedAccObject) {
+          const oldArray = JSON.parse(retrievedAccObject);
+          localStorage.setItem('accounts', JSON.stringify([...oldArray, payload]));
+        }
+      }
       state.accounts.push(payload);
     },
     remove: ({ accounts }, { payload }: PayloadAction<{ id: string }>) => {

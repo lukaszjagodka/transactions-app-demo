@@ -7,7 +7,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 /* eslint-disable max-len */
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -25,6 +25,7 @@ const ListOfAccounts = function () {
   const dispatch = useDispatch();
   const accounts = useSelector((state: IState) => state.accounts.accounts);
   const selectedAcc = useSelector((state: IState) => state.accounts.selectedAccount);
+  const [isAccLS, setIsAccLS] = React.useState<boolean>(false);
   const [list, setList] = React.useState<boolean>(true);
   const [addForm, setAddForm] = React.useState<boolean>(false);
   const [listOfAccounts, setListOfAccounts] = React.useState<IAccount[]>(accounts);
@@ -46,19 +47,30 @@ const ListOfAccounts = function () {
     setList(false); // do testów
     // setList(e); docelowo => false
   };
+  const retrievedAccountsObject: string | null = localStorage.getItem('accounts');
+  if (retrievedAccountsObject) {
+    const accountsFromLocalStorage = JSON.parse(retrievedAccountsObject);
+    if (accountsFromLocalStorage.length > 2 && !isAccLS) {
+      setIsAccLS(true);
+      setListOfAccounts(accountsFromLocalStorage);
+    }
+  }
 
-  const retrievedObject: string | null = localStorage.getItem('selectedAccount');
-  if (retrievedObject) {
-    const { id, accNumber, accValue } = JSON.parse(retrievedObject);
+  useEffect(() => {
+    setIsAccLS(false);
+  }, [isAccLS]);
+
+  const retrievedSelectedAccObject: string | null = localStorage.getItem('selectedAccount');
+  if (retrievedSelectedAccObject) {
+    const { id, accNumber, accValue } = JSON.parse(retrievedSelectedAccObject);
     if (selectedAcc.id === '') {
-      // eslint-disable-next-line object-shorthand
-      dispatch(selectAccountActionCreator({ id: id, accNumber: accNumber, accValue: accValue }));
+      dispatch(selectAccountActionCreator({ id, accNumber, accValue }));
     }
   }
 
   return (
     <>
-      { retrievedObject === null && (
+      { retrievedSelectedAccObject === null && (
       <div>
         {list
           && (
@@ -79,16 +91,16 @@ const ListOfAccounts = function () {
             <DialogContent>
               <List component="span">
                 {
-                  accounts.length < 3 ? (
-                    listOfAccounts.slice(0).reverse().map((acc: any) => (
-                      <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
-                    ))
-                  ) : (
-                    accounts.slice(0).reverse().map((acc: any) => (
-                      <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
-                    ))
-                  )
-                }
+                listOfAccounts.length > 2 ? (
+                  listOfAccounts.slice(0).reverse().map((acc: any) => (
+                    <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
+                  ))
+                ) : (
+                  accounts.slice(0).reverse().map((acc: any) => (
+                    <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
+                  ))
+                )
+              }
               </List>
             </DialogContent>
           </Dialog>
