@@ -21,6 +21,7 @@ const ShowList = function (props: TProps) {
   };
 
   const handleShowAccount = (acc: any) => {
+    localStorage.setItem('selectedAccount', JSON.stringify(acc.id));
     dispatch(selectAccountActionCreator({ id: acc.id, accNumber: acc.accNumber, accValue: acc.accValue }));
     closeListFrmChild();
   };

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-concat */
 /* eslint-disable no-shadow */
@@ -14,14 +15,16 @@ import DialogContent from '@mui/material/DialogContent';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import List from '@mui/material/List';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AddAccount from './AddAccount';
-
+import { selectAccountActionCreator } from './accountsSlice';
 import { IAccount, IState } from '../../types.d';
 import ShowList from './ShowList';
 
 const ListOfAccounts = function () {
+  const dispatch = useDispatch();
   const accounts = useSelector((state: IState) => state.accounts.accounts);
+  const selectedAcc = useSelector((state: IState) => state.accounts.selectedAccount);
   const [list, setList] = React.useState<boolean>(true);
   const [addForm, setAddForm] = React.useState<boolean>(false);
   const [listOfAccounts, setListOfAccounts] = React.useState<IAccount[]>(accounts);
@@ -44,9 +47,20 @@ const ListOfAccounts = function () {
     // setList(e); docelowo => false
   };
 
+  const retrievedObject: string | null = localStorage.getItem('selectedAccount');
+  if (retrievedObject) {
+    const { id, accNumber, accValue } = JSON.parse(retrievedObject);
+    if (selectedAcc.id === '') {
+      // eslint-disable-next-line object-shorthand
+      dispatch(selectAccountActionCreator({ id: id, accNumber: accNumber, accValue: accValue }));
+    }
+  }
+
   return (
-    <div>
-      {list
+    <>
+      { retrievedObject === null && (
+      <div>
+        {list
           && (
           <Dialog
             fullScreen={fullScreen}
@@ -79,9 +93,11 @@ const ListOfAccounts = function () {
             </DialogContent>
           </Dialog>
           )}
-      { addForm
+        { addForm
            && <AddAccount openList={handleOpenList} />}
-    </div>
+      </div>
+      )}
+    </>
   );
 };
 

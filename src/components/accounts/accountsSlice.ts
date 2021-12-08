@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-return-assign */
 /* eslint-disable max-len */
@@ -32,7 +33,10 @@ export const accountsSlice = createSlice({
       const index = accounts.findIndex((account) => account.id);
       if (index !== -1) { accounts.splice(index, 1); }
     },
-    select: (state, { payload }: PayloadAction<IAccount>) => { state.selectedAccount = payload; },
+    select: (state, { payload }: PayloadAction<IAccount>) => {
+      localStorage.setItem('selectedAccount', JSON.stringify(payload));
+      state.selectedAccount = payload;
+    },
   },
 });
 

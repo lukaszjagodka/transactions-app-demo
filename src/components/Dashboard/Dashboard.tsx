@@ -8,9 +8,9 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import {
-  Routes, Route, useParams, Navigate,
+  Routes, Route, Navigate,
 } from 'react-router-dom';
 import ListOfAccounts from '../accounts/ListOfAccounts';
 import Navbar from '../Navbar';
@@ -33,18 +33,15 @@ class Dashboard extends Component <TProps, TState> {
   }
 
   AccDashVerif = () => {
-    const params = useParams();
-    const { accountId } = params;
-    const accountsss = useSelector((state: IState) => state.accounts.accounts);
-    const selA = useSelector((state: IState) => state.accounts.selectedAccount);
-    if (accountId === selA.id) {
-      return <AccountDash acc={accountId} />;
+    const retrievedObject: string | null = localStorage.getItem('selectedAccount');
+    if (retrievedObject !== null) {
+      return <AccountDash />;
     }
+    localStorage.removeItem('selectedAccount');
     return <Navigate replace to="/" />;
   };
 
   render() {
-    const { accounts, selectedAccount } = this.props.accounts;
     return (
       <div>
         <Navbar />
