@@ -13,10 +13,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
 import { useDispatch } from 'react-redux';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 import { createAccountActionCreator } from './accountsSlice';
 import { matchExpression } from '../../helpers/validationAccount';
 import { IAccount } from '../../types.d';
 import { generateAccountNumber, generateAccountName } from '../../helpers/generateAccountDate';
+
+import { initialCurrencesId } from '../../helpers/initialState';
 
 type TProps = {
   openList: any,
@@ -26,13 +34,13 @@ const AddAccount = function (props: TProps) {
   const dispatch = useDispatch();
   const [addForm, setAddForm] = React.useState<boolean>(true);
   const [accBalance, setAccountBalance] = React.useState<number>(0);
+  const [helperText, setHelperText] = React.useState<string>('');
+  const [error, setError] = React.useState<boolean>(false);
   const initialStateByAccountNumber = generateAccountNumber;
   const [numberAcc, setNumberAcc] = React.useState<number>(initialStateByAccountNumber);
   const initialStateByAccountName = generateAccountName;
   const [accountName, setAccountName] = React.useState<string>(initialStateByAccountName);
-
-  const [helperText, setHelperText] = React.useState<string>('');
-  const [error, setError] = React.useState<boolean>(false);
+  const [curr, setCurrence] = React.useState<string>('USD');
 
   const handleNewRandom = () => {
     setAccountName(generateAccountName);
@@ -41,7 +49,9 @@ const AddAccount = function (props: TProps) {
 
   const handleAddAcc = () => {
     if (!error && accBalance !== 0 && Number(accBalance) !== 0) {
-      const newAccount: IAccount = { id: accountName, accNumber: numberAcc, accValue: Number(accBalance) };
+      const newAccount: IAccount = {
+        id: accountName, accNumber: numberAcc, accValue: Number(accBalance), curr,
+      };
       dispatch(createAccountActionCreator(newAccount));
       setAccountBalance(0);
       handleNewRandom();
@@ -66,6 +76,11 @@ const AddAccount = function (props: TProps) {
   const handleClose = () => {
     setAddForm(false);
     props.openList(false);
+  };
+
+  // select box
+  const handleChange = (event: SelectChangeEvent) => {
+    setCurrence(event.target.value as string);
   };
 
   return (
@@ -102,18 +117,42 @@ const AddAccount = function (props: TProps) {
               readOnly: true,
             }}
           />
-          <TextField
-            required
-            helperText={helperText}
-            error={error}
-            autoFocus
-            margin="dense"
-            id="accountBalance"
-            label="Account balance"
-            fullWidth
-            variant="standard"
-            onChange={handleSetAccountBalance}
-          />
+          <div style={{ display: 'flex' }}>
+            <TextField
+              required
+              helperText={helperText}
+              error={error}
+              autoFocus
+              margin="dense"
+              id="accountBalance"
+              label="Account balance"
+              fullWidth
+              variant="standard"
+              onChange={handleSetAccountBalance}
+            />
+            <Box sx={{ minWidth: 150 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Currence</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={curr}
+                  label="Currence"
+                  onChange={handleChange}
+                >
+                  {initialCurrencesId.map((currence) => (
+                    <MenuItem
+                      key={currence}
+                      value={currence}
+                    >
+                      {currence}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </div>
+
         </DialogContent>
         <DialogActions style={{ padding: '25px' }}>
           <Button variant="outlined" onClick={handleClose}>Cancel</Button>

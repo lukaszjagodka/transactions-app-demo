@@ -1,3 +1,6 @@
+/* eslint-disable object-shorthand */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-concat */
@@ -62,15 +65,19 @@ const ListOfAccounts = function () {
 
   const retrievedSelectedAccObject: string | null = localStorage.getItem('selectedAccount');
   if (retrievedSelectedAccObject) {
-    const { id, accNumber, accValue } = JSON.parse(retrievedSelectedAccObject);
+    const {
+      id, accNumber, accValue, curr,
+    } = JSON.parse(retrievedSelectedAccObject);
     if (selectedAcc.id === '') {
-      dispatch(selectAccountActionCreator({ id, accNumber, accValue }));
+      dispatch(selectAccountActionCreator({
+        id, accNumber, accValue, curr,
+      }));
     }
   }
 
   return (
     <>
-      { retrievedSelectedAccObject === null && (
+      { !retrievedSelectedAccObject && (
       <div>
         {list
           && (

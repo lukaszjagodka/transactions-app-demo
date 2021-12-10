@@ -1,7 +1,8 @@
 export interface IAccount {
   id: string,
   accNumber: number,
-  accValue: number
+  accValue: number,
+  curr: string
 }
 
 export interface IState {
