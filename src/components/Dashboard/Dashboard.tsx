@@ -34,8 +34,8 @@ class Dashboard extends Component <TProps, TState> {
 
   AccDashVerif = () => {
     const retrievedObject: string | null = localStorage.getItem('selectedAccount');
-    if (retrievedObject !== null) {
-      return <AccountDash />;
+    if (retrievedObject != null) {
+      return <AccountDash retObj={retrievedObject} />;
     }
     localStorage.removeItem('selectedAccount');
     return <Navigate replace to="/" />;

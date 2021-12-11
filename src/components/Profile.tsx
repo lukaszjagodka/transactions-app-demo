@@ -43,7 +43,10 @@ function AccountMenu() {
     <>
       { retrievedObject ? (
         <>
-          <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+          <Box sx={{
+            display: 'flex', alignItems: 'center', textAlign: 'center', fontSize: '15px',
+          }}
+          >
             {userId}
             <Tooltip title="Account settings">
               <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }} style={{ right: '15px' }}>
