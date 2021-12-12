@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": [
       "dom",
       "dom.iterable",
@@ -26,6 +26,7 @@
     "src/**/*.tsx",
     "src/**/**/*.ts",
     "src/**/**/*.tsx",
+    "src/**/**/**/*.tsx",
     "src/*.tsx",
     "src/*.ts",
   ],

@@ -1,6 +1,8 @@
+/* eslint-disable react/destructuring-assignment */
 import React, { PureComponent } from 'react';
 import { withStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
+import Profile from './Profile';
 
 const styles = {
   navbar: {
@@ -16,10 +18,17 @@ const styles = {
     fontWeight: 'bold',
     color: 'white',
   },
+  profil: {
+    display: 'flex',
+    right: '2rem',
+    marginTop: '0.4rem',
+    position: 'absolute',
+    fontSize: '18px',
+  },
 } as const;
 
 type TProps = {
-  classes: any
+  classes: any,
 }
 
 class NavbarTwo extends PureComponent <TProps> {
@@ -35,6 +44,9 @@ class NavbarTwo extends PureComponent <TProps> {
         >
           <div className={classes.logo}>
             transactionApp
+          </div>
+          <div className={classes.profil}>
+            <Profile />
           </div>
         </Typography>
       </header>
