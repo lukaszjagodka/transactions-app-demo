@@ -13,10 +13,10 @@ export interface IState {
 export const newIni: IState = {
   accounts: [
     {
-      id: 'Demo-account-pzc38tfeo', accNumber: 603975430160344, accValue: 15000, curr: 'USD',
+      id: 'Demo-account-pzc38tfeo', accNumber: 603975430160344, accValue: 15000, curr: 'PLN',
     },
     {
-      id: 'Demo-account-m8fpdawbi', accNumber: 152573100742264, accValue: 23000, curr: 'PLN',
+      id: 'Demo-account-m8fpdawbi', accNumber: 152573100742264, accValue: 6000, curr: 'USD',
     },
   ],
   selectedAccount: {
