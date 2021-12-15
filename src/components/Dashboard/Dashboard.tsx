@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-undef */
 /* eslint-disable react/no-unused-class-component-methods */
@@ -14,7 +15,7 @@ import {
 } from 'react-router-dom';
 import ListOfAccounts from '../accounts/ListOfAccounts';
 import Navbar from '../Navbar';
-import { IState, IAccount } from '../../types.d';
+import { IAccountsState, IAccount } from '../../types.d';
 import AccountDash from '../AccountDash';
 
 type TProps = {
@@ -34,11 +35,13 @@ class Dashboard extends Component <TProps, TState> {
 
   AccDashVerif = () => {
     const retrievedObject: string | null = localStorage.getItem('selectedAccount');
-    if (retrievedObject != null) {
-      return <AccountDash retObj={retrievedObject} />;
+    if (retrievedObject !== null) {
+      return <AccountDash />;
     }
-    localStorage.removeItem('selectedAccount');
-    return <Navigate replace to="/" />;
+      <Navigate replace to="/" />;
+      return (
+        <div />
+      );
   };
 
   render() {
@@ -47,7 +50,7 @@ class Dashboard extends Component <TProps, TState> {
         <Navbar />
         <Routes>
           <Route path="/a/:accountId" element={<this.AccDashVerif />} />
-          <Route path="/" element={<div />} />
+          <Route path="/" element={<this.AccDashVerif />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>
         <ListOfAccounts />
@@ -56,7 +59,7 @@ class Dashboard extends Component <TProps, TState> {
   }
 }
 
-const mapStateToProps = (state: IState) => ({
+const mapStateToProps = (state: IAccountsState) => ({
   accounts: state.accounts,
 });
 

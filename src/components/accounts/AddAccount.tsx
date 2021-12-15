@@ -20,7 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import { createAccountActionCreator } from './accountsSlice';
-import { matchExpression } from '../../helpers/validationAccount';
+import { matchExpression } from '../../helpers/otherFunctions';
 import { IAccount } from '../../types.d';
 import { generateAccountNumber, generateAccountName } from '../../helpers/generateAccountDate';
 

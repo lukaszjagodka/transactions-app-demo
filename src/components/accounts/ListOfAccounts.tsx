@@ -21,13 +21,13 @@ import List from '@mui/material/List';
 import { useSelector, useDispatch } from 'react-redux';
 import AddAccount from './AddAccount';
 import { selectAccountActionCreator } from './accountsSlice';
-import { IAccount, IState } from '../../types.d';
+import { IAccount, IAccountsState } from '../../types.d';
 import ShowList from './ShowList';
 
 const ListOfAccounts = function () {
   const dispatch = useDispatch();
-  const accounts = useSelector((state: IState) => state.accounts.accounts);
-  const selectedAcc = useSelector((state: IState) => state.accounts.selectedAccount);
+  const accounts = useSelector((state: IAccountsState) => state.accounts.accounts);
+  const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
   const [isAccLS, setIsAccLS] = React.useState<boolean>(false);
   const [list, setList] = React.useState<boolean>(true);
   const [addForm, setAddForm] = React.useState<boolean>(false);
@@ -47,9 +47,9 @@ const ListOfAccounts = function () {
   };
 
   const handleCloseList = (e: any) => {
-    setList(false); // do testów
-    // setList(e); docelowo => false
+    setList(e);
   };
+
   const retrievedAccountsObject: string | null = localStorage.getItem('accounts');
   if (retrievedAccountsObject) {
     const accountsFromLocalStorage = JSON.parse(retrievedAccountsObject);

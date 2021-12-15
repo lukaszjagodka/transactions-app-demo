@@ -24,9 +24,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-type TProps = {
-  retObj: string
-}
+type TProps = {}
 
 type TState = {
   id: string,
@@ -51,17 +49,19 @@ class AccountDash extends Component <TProps, TState> {
   }
 
   initialize = () => {
-    const { retObj } = this.props;
-    const selectedAccountObj = JSON.parse(retObj);
-    const {
-      id, accNumber, accValue, curr,
-    } = selectedAccountObj;
-    this.setState({
-      id,
-      accNumber,
-      accValue,
-      curr,
-    });
+    const retObj: string | null = localStorage.getItem('selectedAccount');
+    if (retObj !== null) {
+      const selectedAccountObj = JSON.parse(retObj);
+      const {
+        id, accNumber, accValue, curr,
+      } = selectedAccountObj;
+      this.setState({
+        id,
+        accNumber,
+        accValue,
+        curr,
+      });
+    }
   };
 
   render() {

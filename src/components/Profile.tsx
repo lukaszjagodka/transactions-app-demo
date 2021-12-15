@@ -15,12 +15,14 @@ import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { connect } from 'react-redux';
-import { IState } from '../types.d';
-import { logOut } from '../helpers/logout';
+import { logOut } from '../helpers/otherFunctions';
+import { IAccountsState } from '../types.d';
 
 function AccountMenu() {
   const [userId, setUserId] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [key, setKey] = React.useState<boolean>(false);
+  const [used, setUsed] = React.useState<boolean>(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -29,6 +31,22 @@ function AccountMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const makeKey = () => {
+    const temporaryKey: string | null = localStorage.getItem('temporaryKey');
+    if (!temporaryKey) {
+      setUsed(true);
+      localStorage.setItem('temporaryKey', JSON.stringify({ temporaryKey: 'xxxxxx' }));
+      window.location.reload();
+    }
+  };
+
+  const temporaryKey: string | null = localStorage.getItem('temporaryKey');
+  if (temporaryKey) {
+    if (!used) {
+      setKey(true);
+      setUsed(true);
+    }
+  }
 
   const retrievedObject: string | null = localStorage.getItem('selectedAccount');
   if (userId === null) {
@@ -39,6 +57,7 @@ function AccountMenu() {
       setUserId(selectedAccountObj.id.substring(13, length));
     }
   }
+
   return (
     <>
       { retrievedObject ? (
@@ -88,10 +107,10 @@ function AccountMenu() {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem disabled>
+            <MenuItem style={{ backgroundColor: key ? 'white' : 'orange' }} onClick={() => makeKey()}>
               <Avatar />
               {' '}
-              Profile
+              { !key ? 'Add KEY' : 'Key'}
             </MenuItem>
             <MenuItem disabled>
               <Avatar />
@@ -118,7 +137,7 @@ function AccountMenu() {
   );
 }
 
-const mapStateToProps = (state: IState) => ({
+const mapStateToProps = (state: IAccountsState) => ({
   selectedAccount: state.accounts.selectedAccount,
 });
 
