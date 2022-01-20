@@ -1,8 +1,7 @@
-/* eslint-disable import/prefer-default-export */
 import { accountsSlice } from './components/accounts/accountsSlice';
-import { transactionsSlice } from './components/transactionsSlice';
+import { transactionsSlice } from './components/transactions/transactionsSlice';
 
-export const reducer = {
+export const rootReducer = {
   accounts: accountsSlice.reducer,
   transactions: transactionsSlice.reducer,
 };

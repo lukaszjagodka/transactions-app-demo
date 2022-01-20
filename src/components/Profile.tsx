@@ -1,7 +1,3 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-undef */
-/* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable react/function-component-definition */
 import React from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -15,10 +11,10 @@ import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { connect } from 'react-redux';
-import { logOut } from '../helpers/otherFunctions';
-import { IAccountsState } from '../types.d';
+import { logOut } from '../helpers/loginFunctions';
+import { IAccountsState } from '../types/types';
 
-function AccountMenu() {
+const AccountMenu = function () {
   const [userId, setUserId] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [key, setKey] = React.useState<boolean>(false);
@@ -59,7 +55,7 @@ function AccountMenu() {
   }
 
   return (
-    <>
+    <div>
       { retrievedObject ? (
         <>
           <Box sx={{
@@ -107,7 +103,7 @@ function AccountMenu() {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem style={{ backgroundColor: key ? 'white' : 'orange' }} onClick={() => makeKey()}>
+            <MenuItem style={{ backgroundColor: key ? 'white' : 'orange' }} onClick={makeKey}>
               <Avatar />
               {' '}
               { !key ? 'Add KEY' : 'Key'}
@@ -133,9 +129,9 @@ function AccountMenu() {
           </Menu>
         </>
       ) : '' }
-    </>
+    </div>
   );
-}
+};
 
 const mapStateToProps = (state: IAccountsState) => ({
   selectedAccount: state.accounts.selectedAccount,

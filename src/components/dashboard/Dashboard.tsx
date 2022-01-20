@@ -1,21 +1,11 @@
-/* eslint-disable no-console */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable no-alert */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable consistent-return */
-/* eslint-disable react/no-unused-class-component-methods */
-/* eslint-disable react/no-unused-state */
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable func-names */
 import React, { Component } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { Divider } from '@mui/material';
-import TransactionTable from './TransactionsTable';
-import ChangeCurrences from './ChangeCurrences';
+import TransactionTable from '../transactions/TransactionsTable';
+import ChangeCurrencies from '../ChangeCurrencies';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -24,23 +14,21 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-type TProps = {}
-
 type TState = {
   id: string,
-  accNumber: number,
-  accValue: number,
-  curr: string,
+  accountNumber: number,
+  accountValue: number,
+  currency: string,
 }
 
-class AccountDash extends Component <TProps, TState> {
+class Dashboard extends Component <{}, TState> {
   constructor(props: any) {
     super(props);
     this.state = {
       id: '',
-      accNumber: 0,
-      accValue: 0,
-      curr: '',
+      accountNumber: 0,
+      accountValue: 0,
+      currency: '',
     };
   }
 
@@ -53,20 +41,20 @@ class AccountDash extends Component <TProps, TState> {
     if (retObj !== null) {
       const selectedAccountObj = JSON.parse(retObj);
       const {
-        id, accNumber, accValue, curr,
+        id, accountNumber, accountValue, currency,
       } = selectedAccountObj;
       this.setState({
         id,
-        accNumber,
-        accValue,
-        curr,
+        accountNumber,
+        accountValue,
+        currency,
       });
     }
   };
 
   render() {
     const {
-      id, accNumber, accValue, curr,
+      id, accountNumber, accountValue, currency,
     } = this.state;
 
     return (
@@ -79,20 +67,20 @@ class AccountDash extends Component <TProps, TState> {
             <Grid item xs={10}>
               <Item>
                 <div className="mainDash">
-                  <div className="accNumberDash" style={{ marginLeft: '15px', display: 'flex', fontWeight: 'bold' }}>
+                  <div className="accountNumberDashboard" style={{ marginLeft: '15px', display: 'flex', fontWeight: 'bold' }}>
                     Account number:
                     {' '}
-                    {accNumber}
+                    {accountNumber}
                   </div>
                 </div>
               </Item>
             </Grid>
             <Grid item xs={2}>
               <Item>
-                <div className="accValueDash" style={{ color: 'black', right: '5px', fontWeight: 'bold' }}>
-                  {accValue}
+                <div className="accountValueDashboard" style={{ color: 'black', right: '5px', fontWeight: 'bold' }}>
+                  {accountValue}
                   {' '}
-                  {curr}
+                  {currency}
                 </div>
               </Item>
             </Grid>
@@ -107,7 +95,7 @@ class AccountDash extends Component <TProps, TState> {
 
             <Grid item xs={4}>
               <Item>
-                <ChangeCurrences />
+                <ChangeCurrencies />
                 <Divider />
               </Item>
             </Grid>
@@ -119,4 +107,4 @@ class AccountDash extends Component <TProps, TState> {
   }
 }
 
-export default AccountDash;
+export default Dashboard;
