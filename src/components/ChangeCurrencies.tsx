@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,7 +24,7 @@ const ChangeCurrencies = function () {
   const [amountFirstPair, setAmountFirstPair] = useState<number | string>('');
   const [currFirstPair, setCurrencyFirstPair] = useState<string>('USD');
   const [helperText, setHelperText] = useState<string>('');
-  const [error, setError] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   // SECOND PAIR
   const [amountSecondPair, setAmountSecondPair] = useState<number | string>('');
@@ -72,14 +72,14 @@ const ChangeCurrencies = function () {
     const target = e.target as HTMLTextAreaElement;
     if (matchExpression(target.value) === false) {
       setHelperText('Only number.');
-      setError(true);
+      setIsError(true);
       setTimeout(() => {
         setHelperText('');
-        setError(false);
+        setIsError(false);
       }, 2500);
     } else {
       setHelperText('');
-      setError(false);
+      setIsError(false);
       setAmountFirstPair(e.target.value);
     }
   };
@@ -99,7 +99,7 @@ const ChangeCurrencies = function () {
     setAmountFirstPair('');
     setAmountSecondPair('');
     setHelperText('');
-    setError(false);
+    setIsError(false);
   };
 
   return (
@@ -110,7 +110,7 @@ const ChangeCurrencies = function () {
           style={{ marginRight: '15px' }}
           required
           helperText={helperText}
-          error={error}
+          error={isError}
           value={amountFirstPair}
           onChange={setAmountFP}
           autoFocus

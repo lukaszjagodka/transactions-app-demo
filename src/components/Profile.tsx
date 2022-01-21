@@ -11,7 +11,7 @@ import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { connect } from 'react-redux';
-import { logOut } from '../helpers/loginFunctions';
+import { logOut } from '../helpers/logout';
 import { IAccountsState } from '../types/types';
 
 const AccountMenu = function () {

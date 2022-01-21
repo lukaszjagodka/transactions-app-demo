@@ -1,14 +1,12 @@
-/* eslint-disable func-names */
-/* eslint-disable max-len */
 import React from 'react';
 import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { selectAccountActionCreator } from './accountsSlice';
+import { selectAccount } from './accountsSlice';
 
 type TProps = {
-  acc: any,
+  account: any,
   closeList: any,
 };
 
@@ -20,23 +18,23 @@ const ShowList = function (props: TProps) {
     closeList(false);
   };
 
-  const handleShowAccount = (acc: any) => {
-    localStorage.setItem('selectedAccount', JSON.stringify(acc.id));
-    dispatch(selectAccountActionCreator({
-      id: acc.id, accNumber: acc.accNumber, accValue: acc.accValue, curr: acc.curr,
+  const handleShowAccount = (account: any) => {
+    localStorage.setItem('selectedAccount', JSON.stringify(account.id));
+    dispatch(selectAccount({
+      id: account.id, accountNumber: account.accNumber, accountValue: account.accountValue, currency: account.currency,
     }));
     closeListFrmChild();
   };
 
-  const { acc } = props;
+  const { account } = props;
   return (
-    <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/a/${acc.id}`}>
-      <ListItem component="span" key={acc.id} button>
-        <ListItemText primary={acc.id} secondary={acc.accNumber} onClick={() => handleShowAccount(acc)} />
+    <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/a/${account.id}`}>
+      <ListItem component="span" key={account.id} button>
+        <ListItemText primary={account.id} secondary={account.accountNumber} onClick={() => handleShowAccount(account)} />
         <div style={{ right: '15px' }}>
-          {acc.accValue}
+          {account.accountValue}
           {' '}
-          {acc.curr}
+          {account.currency}
         </div>
       </ListItem>
     </NavLink>
