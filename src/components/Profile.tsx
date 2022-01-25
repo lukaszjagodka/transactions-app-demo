@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -8,17 +8,36 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import Settings from '@mui/icons-material/Settings';
+import SettingsIc from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { connect } from 'react-redux';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
 import { logOut } from '../helpers/logout';
 import { IAccountsState } from '../types/types';
+import DeleteAccount from './DeleteAccount';
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '500px',
+  left: '50%',
+  width: '60%',
+  height: '700px',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+};
 
 const AccountMenu = function () {
-  const [userId, setUserId] = React.useState(null);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [key, setKey] = React.useState<boolean>(false);
-  const [used, setUsed] = React.useState<boolean>(false);
+  const [userId, setUserId] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [key, setKey] = useState<boolean>(false);
+  const [used, setUsed] = useState<boolean>(false);
+  const [openSettings, setOpenSettings] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,6 +46,14 @@ const AccountMenu = function () {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleOpenSettings = () => {
+    setOpenSettings(true);
+  };
+  const handleCloseSettings = () => {
+    setOpenSettings(false);
+  };
+
   const makeKey = () => {
     const temporaryKey: string | null = localStorage.getItem('temporaryKey');
     if (!temporaryKey) {
@@ -34,6 +61,10 @@ const AccountMenu = function () {
       localStorage.setItem('temporaryKey', JSON.stringify({ temporaryKey: 'xxxxxx' }));
       window.location.reload();
     }
+  };
+
+  const settings = () => {
+    setOpenSettings(true);
   };
 
   const temporaryKey: string | null = localStorage.getItem('temporaryKey');
@@ -56,6 +87,25 @@ const AccountMenu = function () {
 
   return (
     <div>
+      <Modal
+        hideBackdrop
+        open={openSettings}
+        onClose={handleCloseSettings}
+        aria-labelledby="child-modal-title"
+        aria-describedby="child-modal-description"
+      >
+        <Box sx={{ ...style }}>
+          <h2 id="child-modal-title">Settings</h2>
+          <Divider />
+          <br />
+          Delete account
+          {' '}
+          <DeleteAccount />
+          <br />
+          <Divider />
+          <Button style={{ top: '20px' }} onClick={handleCloseSettings}>Close</Button>
+        </Box>
+      </Modal>
       { retrievedObject ? (
         <>
           <Box sx={{
@@ -114,9 +164,9 @@ const AccountMenu = function () {
               My account
             </MenuItem>
             <Divider />
-            <MenuItem disabled>
+            <MenuItem onClick={settings}>
               <ListItemIcon>
-                <Settings fontSize="small" />
+                <SettingsIc fontSize="small" />
               </ListItemIcon>
               Settings
             </MenuItem>
