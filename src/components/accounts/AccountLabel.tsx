@@ -10,7 +10,7 @@ type TProps = {
   closeList: any,
 };
 
-const ShowList = function (props: TProps) {
+const AccountLabel = function (props: TProps) {
   const dispatch = useDispatch();
 
   const closeListFrmChild = () => {
@@ -41,4 +41,4 @@ const ShowList = function (props: TProps) {
   );
 };
 
-export default ShowList;
+export default AccountLabel;

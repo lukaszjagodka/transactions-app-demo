@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import AddAccount from './AddAccount';
 import { selectAccount } from './accountsSlice';
 import { IAccount, IAccountsState } from '../../types/types';
-import ShowList from './ShowList';
+import AccountLabel from './AccountLabel';
 
 const ListOfAccounts = function () {
   const dispatch = useDispatch();
@@ -88,11 +88,11 @@ const ListOfAccounts = function () {
                 {
                 listOfAccounts.length > 2 ? (
                   listOfAccounts.slice(0).reverse().map((acc: any) => (
-                    <ShowList key={acc.id} account={acc} closeList={handleCloseList} />
+                    <AccountLabel key={acc.id} account={acc} closeList={handleCloseList} />
                   ))
                 ) : (
                   accounts.slice(0).reverse().map((acc: any) => (
-                    <ShowList key={acc.id} account={acc} closeList={handleCloseList} />
+                    <AccountLabel key={acc.id} account={acc} closeList={handleCloseList} />
                   ))
                 )
               }
