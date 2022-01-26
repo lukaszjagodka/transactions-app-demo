@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -7,11 +8,11 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { removeAccount } from './accounts/accountsSlice';
+import { logOut } from '../helpers/logout';
 
-function mapStateToProps() {
-  return {
-
-  };
+type TProps = {
+  removeAccount: any
 }
 
 type TState = {
@@ -27,7 +28,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>((
   ref,
 ) => <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />);
 
-class DeleteAccount extends Component <{}, TState> {
+class DeleteAccount extends Component <TProps, TState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -57,6 +58,7 @@ class DeleteAccount extends Component <{}, TState> {
 
   deleteAccountBtn = () => {
     const { accountToDelete } = this.state;
+    const { removeAccount } = this.props;
     const selectedAccount: string | null = localStorage.getItem('selectedAccount');
     if (selectedAccount) {
       const objSelectedAccount = JSON.parse(selectedAccount);
@@ -66,6 +68,8 @@ class DeleteAccount extends Component <{}, TState> {
           open: true,
           accuntMatches: 1,
         });
+        removeAccount(id);
+        logOut();
       } else {
         this.setState({
           open: true,
@@ -149,6 +153,14 @@ class DeleteAccount extends Component <{}, TState> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-)(DeleteAccount);
+const mapDispatchToProps = (dispatch: any) => ({
+  removeAccount: (id: string) => dispatch(removeAccount(id)),
+});
+
+function mapStateToProps() {
+  return {
+
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteAccount);

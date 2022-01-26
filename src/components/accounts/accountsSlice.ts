@@ -41,8 +41,15 @@ export const accountsSlice = createSlice({
       }
       state.accounts.push(payload);
     },
-    removeAccount: ({ accounts }, { payload }: PayloadAction<{ id: string }>) => {
-      const index = accounts.findIndex((account) => account.id);
+    removeAccount: ({ accounts }, { payload }: PayloadAction<string>) => {
+      const accountsLocalStorage: string | null = localStorage.getItem('accounts');
+      if (accountsLocalStorage) {
+        const listOfAccounts = JSON.parse(accountsLocalStorage);
+        const index = listOfAccounts.findIndex((account: any) => account.id === payload);
+        if (index !== -1) { listOfAccounts.splice(index, 1); }
+        localStorage.setItem('accounts', JSON.stringify(listOfAccounts));
+      }
+      const index = accounts.findIndex((account) => account.id === payload);
       if (index !== -1) { accounts.splice(index, 1); }
     },
     selectAccount: (state, { payload }: PayloadAction<IAccount>) => {
