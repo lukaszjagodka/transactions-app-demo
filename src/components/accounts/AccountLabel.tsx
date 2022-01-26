@@ -21,7 +21,7 @@ const AccountLabel = function (props: TProps) {
   const handleShowAccount = (account: any) => {
     localStorage.setItem('selectedAccount', JSON.stringify(account.id));
     dispatch(selectAccount({
-      id: account.id, accountNumber: account.accNumber, accountValue: account.accountValue, currency: account.currency,
+      id: account.id, accountNumber: account.accountNumber, accountValue: account.accountValue, currency: account.currency,
     }));
     closeListFrmChild();
   };
