@@ -19,6 +19,7 @@ const ChangeCurrencies = function () {
   const dispatch = useDispatch();
   const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
   const actual3xItem: string | null = localStorage.getItem('actual3x');
+  const [rate, setRate] = useState<string>('');
 
   // FIRST PAIR
   const [amountFirstPair, setAmountFirstPair] = useState<number | string>('');
@@ -46,6 +47,7 @@ const ChangeCurrencies = function () {
     if (amountFirstPair !== '' && currFirstPair !== currSecondPair && actual3xItem) {
       const actualPair = findPairInArray(actual3xItem);
       if (actualPair.length) {
+        setRate(actualPair[0].value);
         const amountSP = convertCurrency(amountFirstPair, actualPair);
         setAmountSecondPair(amountSP);
       }
@@ -184,6 +186,7 @@ const ChangeCurrencies = function () {
       </div>
       <DialogActions>
         <Button fullWidth variant="outlined" onClick={handleCancel}>Cancel</Button>
+        <TextField style={{ margin: '5px', left: '4px' }} id="outlined-basic" variant="outlined" value={rate} disabled />
         <Button fullWidth variant="outlined" color="success" onClick={handleChange}>Change</Button>
       </DialogActions>
     </div>
