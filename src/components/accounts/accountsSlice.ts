@@ -4,7 +4,8 @@ import { IAccount, TCreateAccounts } from '../../types/types';
 
 export interface IState {
   accounts: Array<IAccount>,
-  selectedAccount: IAccount
+  selectedAccount: IAccount,
+  accountValue: number
 }
 
 export const initialState: IState = {
@@ -22,6 +23,7 @@ export const initialState: IState = {
     accountValue: 0,
     currency: '',
   },
+  accountValue: 0,
 };
 
 export const accountsSlice = createSlice({
@@ -30,7 +32,7 @@ export const accountsSlice = createSlice({
   reducers: {
     createAccount: (state, { payload }: PayloadAction<TCreateAccounts>) => {
       const accLS: string | null = localStorage.getItem('accounts');
-      if (accLS === null) {
+      if (accLS) {
         localStorage.setItem('accounts', JSON.stringify([...initialState.accounts, payload]));
       } else {
         const retrievedAccObject: string | null = localStorage.getItem('accounts');
@@ -56,6 +58,13 @@ export const accountsSlice = createSlice({
       localStorage.setItem('selectedAccount', JSON.stringify(payload));
       state.selectedAccount = payload;
     },
+    updateAccountValue: (state, { payload }: PayloadAction<number>) => {
+      const selectedAccount: string | null = localStorage.getItem('selectedAccount');
+      if (selectedAccount) {
+        const { accountValue } = JSON.parse(selectedAccount);
+        state.accountValue = accountValue;
+      }
+    },
   },
 });
 
@@ -63,4 +72,5 @@ export const {
   createAccount,
   removeAccount,
   selectAccount,
+  updateAccountValue,
 } = accountsSlice.actions;

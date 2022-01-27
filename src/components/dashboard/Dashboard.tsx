@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -14,6 +15,10 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+type TProps = {
+  accountValueRedux: number,
+}
+
 type TState = {
   id: string,
   accountNumber: number,
@@ -21,7 +26,7 @@ type TState = {
   currency: string,
 }
 
-class Dashboard extends Component <{}, TState> {
+class Dashboard extends Component <TProps, TState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -38,7 +43,7 @@ class Dashboard extends Component <{}, TState> {
 
   initialize = () => {
     const retObj: string | null = localStorage.getItem('selectedAccount');
-    if (retObj !== null) {
+    if (retObj) {
       const selectedAccountObj = JSON.parse(retObj);
       const {
         id, accountNumber, accountValue, currency,
@@ -56,7 +61,7 @@ class Dashboard extends Component <{}, TState> {
     const {
       id, accountNumber, accountValue, currency,
     } = this.state;
-
+    const { accountValueRedux } = this.props;
     return (
       <div>
         <Box sx={{
@@ -78,7 +83,7 @@ class Dashboard extends Component <{}, TState> {
             <Grid item xs={2}>
               <Item>
                 <div className="accountValueDashboard" style={{ color: 'black', right: '5px', fontWeight: 'bold' }}>
-                  {accountValue}
+                  {accountValueRedux !== 0 ? accountValueRedux : accountValue}
                   {' '}
                   {currency}
                 </div>
@@ -107,4 +112,13 @@ class Dashboard extends Component <{}, TState> {
   }
 }
 
-export default Dashboard;
+const mapDispatchToProps = (dispatch: any) => ({
+});
+
+function mapStateToProps(state: any) {
+  return {
+    accountValueRedux: state.accounts.accountValue,
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

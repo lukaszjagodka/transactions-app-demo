@@ -1,5 +1,4 @@
 /* eslint-disable no-alert */
-/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -13,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { initialCurrenciesId } from '../helpers/initialState';
 import { matchExpression } from '../helpers/matchExpression';
 import { createTransaction } from './transactions/transactionsSlice';
+import { updateAccountValue } from './accounts/accountsSlice';
 import { IAccountsState, TPair } from '../types/types';
 
 const ChangeCurrencies = function () {
@@ -73,6 +73,8 @@ const ChangeCurrencies = function () {
             dispatch(createTransaction({
               account: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, amountSecondPair: amountSP, currencySecondPair: currSecondPair,
             }));
+            const newAccountValue = Number(amountFirstPair);
+            dispatch(updateAccountValue(newAccountValue));
             setAmountFirstPair('');
             setAmountSecondPair('');
             setRate('');
