@@ -30,18 +30,14 @@ export const accountsSlice = createSlice({
   name: 'accounts',
   initialState,
   reducers: {
-    createAccount: (state, { payload }: PayloadAction<TCreateAccounts>) => {
-      const accLS: string | null = localStorage.getItem('accounts');
-      if (accLS) {
-        localStorage.setItem('accounts', JSON.stringify([...initialState.accounts, payload]));
+    createAccount: ({ accounts }, { payload }: PayloadAction<TCreateAccounts>) => {
+      const accountsFromLS: string | null = localStorage.getItem('accounts');
+      if (accountsFromLS) {
+        localStorage.setItem('accounts', JSON.stringify([...accounts, payload]));
       } else {
-        const retrievedAccObject: string | null = localStorage.getItem('accounts');
-        if (retrievedAccObject) {
-          const oldArray = JSON.parse(retrievedAccObject);
-          localStorage.setItem('accounts', JSON.stringify([...oldArray, payload]));
-        }
+        localStorage.setItem('accounts', JSON.stringify([...initialState.accounts, payload]));
       }
-      state.accounts.push(payload);
+      accounts.push(payload);
     },
     removeAccount: ({ accounts }, { payload }: PayloadAction<string>) => {
       const accountsLocalStorage: string | null = localStorage.getItem('accounts');
