@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { setTimeout } from 'timers';
 import { removeAccount } from './accounts/accountsSlice';
 import { logOut } from '../helpers/logout';
 
@@ -69,7 +70,7 @@ class DeleteAccount extends Component <TProps, TState> {
           accuntMatches: 1,
         });
         removeAccount(id);
-        logOut();
+        setTimeout(() => logOut(), 3000);
       } else {
         this.setState({
           open: true,
