@@ -51,6 +51,12 @@ export const accountsSlice = createSlice({
         if (index !== -1) { listOfAccounts.splice(index, 1); }
         localStorage.setItem('accounts', JSON.stringify(listOfAccounts));
       }
+      const accountsTransactions: string | null = localStorage.getItem('accountsTransactions');
+      if (accountsTransactions) {
+        const listOfTransactions = JSON.parse(accountsTransactions);
+        const newListTransatcion = listOfTransactions.filter((transaction: any) => transaction.account !== payload);
+        localStorage.setItem('accountsTransactions', JSON.stringify(newListTransatcion));
+      }
       const index = accounts.findIndex((account) => account.id === payload);
       if (index !== -1) { accounts.splice(index, 1); }
     },
