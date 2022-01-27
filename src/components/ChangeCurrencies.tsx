@@ -18,6 +18,7 @@ import { IAccountsState, TPair } from '../types/types';
 const ChangeCurrencies = function () {
   const dispatch = useDispatch();
   const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
+  const selectedAccount: string | null = localStorage.getItem('selectedAccount');
   const actual3xItem: string | null = localStorage.getItem('actual3x');
   const [rate, setRate] = useState<string>('');
 
@@ -55,17 +56,28 @@ const ChangeCurrencies = function () {
   });
 
   const handleChange = async () => {
-    if (amountFirstPair && currFirstPair !== currSecondPair && actual3xItem) {
-      const actualPair = findPairInArray(actual3xItem);
-      if (!actualPair.length) {
-        alert('We havent this rate in our data. Please change currencies.');
-      } else {
-        const amountSP = convertCurrency(amountFirstPair, actualPair);
-        dispatch(createTransaction({
-          account: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, amountSecondPair: amountSP, currencySecondPair: currSecondPair,
-        }));
-        setAmountFirstPair('');
-        setAmountSecondPair('');
+    if (selectedAccount) {
+      const { accountValue, accountNumber } = JSON.parse(selectedAccount);
+      if (amountFirstPair < accountValue) {
+        if (amountFirstPair && currFirstPair !== currSecondPair && actual3xItem) {
+          const actualPair = findPairInArray(actual3xItem);
+          if (!actualPair.length) {
+            alert('We havent this rate in our data. Please change currencies.');
+          } else {
+            const actualBalance = accountValue - Number(amountFirstPair);
+            const updatedSelectedAccount = {
+              id: selectedAcc.id, accountNumber, accountValue: actualBalance, currency: currFirstPair,
+            };
+            localStorage.setItem('selectedAccount', JSON.stringify(updatedSelectedAccount));
+            const amountSP = convertCurrency(amountFirstPair, actualPair);
+            dispatch(createTransaction({
+              account: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, amountSecondPair: amountSP, currencySecondPair: currSecondPair,
+            }));
+            setAmountFirstPair('');
+            setAmountSecondPair('');
+            setRate('');
+          }
+        }
       }
     }
   };
@@ -101,6 +113,7 @@ const ChangeCurrencies = function () {
     setAmountFirstPair('');
     setAmountSecondPair('');
     setHelperText('');
+    setRate('');
     setIsError(false);
   };
 
