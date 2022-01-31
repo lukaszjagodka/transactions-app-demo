@@ -1,16 +1,4 @@
-/* eslint-disable object-shorthand */
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-useless-concat */
-/* eslint-disable no-shadow */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-console */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable func-names */
-/* eslint-disable max-len */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -20,66 +8,66 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import List from '@mui/material/List';
 import { useSelector, useDispatch } from 'react-redux';
 import AddAccount from './AddAccount';
-import { selectAccountActionCreator } from './accountsSlice';
-import { IAccount, IAccountsState } from '../../types.d';
-import ShowList from './ShowList';
+import { selectAccount } from './accountsSlice';
+import { IAccount, IAccountsState } from '../../types/types';
+import AccountLabel from './AccountLabel';
 
 const ListOfAccounts = function () {
   const dispatch = useDispatch();
   const accounts = useSelector((state: IAccountsState) => state.accounts.accounts);
   const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
-  const [isAccLS, setIsAccLS] = React.useState<boolean>(false);
-  const [list, setList] = React.useState<boolean>(true);
-  const [addForm, setAddForm] = React.useState<boolean>(false);
-  const [listOfAccounts, setListOfAccounts] = React.useState<IAccount[]>(accounts);
+  const [isAccountLS, setIsAccountLS] = useState<boolean>(false);
+  const [isList, setIsList] = useState<boolean>(true);
+  const [addForm, setAddForm] = useState<boolean>(false);
+  const [listOfAccounts, setListOfAccounts] = useState<IAccount[]>(accounts);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleCreateNewAcc = () => {
-    setList(false);
+    setIsList(false);
     setAddForm(!addForm);
       <AddAccount openList={handleOpenList} />;
   };
 
   const handleOpenList = (e: any) => {
-    setList(!e);
+    setIsList(!e);
     setAddForm(e);
   };
 
   const handleCloseList = (e: any) => {
-    setList(e);
+    setIsList(e);
   };
 
   const retrievedAccountsObject: string | null = localStorage.getItem('accounts');
   if (retrievedAccountsObject) {
     const accountsFromLocalStorage = JSON.parse(retrievedAccountsObject);
-    if (accountsFromLocalStorage.length > 2 && !isAccLS) {
-      setIsAccLS(true);
+    if (accountsFromLocalStorage.length > 2 && !isAccountLS) {
+      setIsAccountLS(true);
       setListOfAccounts(accountsFromLocalStorage);
     }
   }
 
   useEffect(() => {
-    setIsAccLS(false);
-  }, [isAccLS]);
+    setIsAccountLS(false);
+  }, [isAccountLS]);
 
   const retrievedSelectedAccObject: string | null = localStorage.getItem('selectedAccount');
   if (retrievedSelectedAccObject) {
     const {
-      id, accNumber, accValue, curr,
+      id, accountNumber, accountValue, currency,
     } = JSON.parse(retrievedSelectedAccObject);
     if (selectedAcc.id === '') {
-      dispatch(selectAccountActionCreator({
-        id, accNumber, accValue, curr,
+      dispatch(selectAccount({
+        id, accountNumber, accountValue, currency,
       }));
     }
   }
 
   return (
-    <>
+    <div>
       { !retrievedSelectedAccObject && (
       <div>
-        {list
+        {isList
           && (
           <Dialog
             fullScreen={fullScreen}
@@ -100,11 +88,11 @@ const ListOfAccounts = function () {
                 {
                 listOfAccounts.length > 2 ? (
                   listOfAccounts.slice(0).reverse().map((acc: any) => (
-                    <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
+                    <AccountLabel key={acc.id} account={acc} closeList={handleCloseList} />
                   ))
                 ) : (
                   accounts.slice(0).reverse().map((acc: any) => (
-                    <ShowList key={acc.id} acc={acc} closeList={handleCloseList} />
+                    <AccountLabel key={acc.id} account={acc} closeList={handleCloseList} />
                   ))
                 )
               }
@@ -116,7 +104,7 @@ const ListOfAccounts = function () {
            && <AddAccount openList={handleOpenList} />}
       </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,16 +1,4 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable prefer-const */
-/* eslint-disable consistent-return */
-/* eslint-disable eqeqeq */
-/* eslint-disable max-len */
-/* eslint-disable no-useless-return */
-/* eslint-disable array-callback-return */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-alert */
-/* eslint-disable no-console */
-/* eslint-disable react/function-component-definition */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -21,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import { useSelector } from 'react-redux';
-import { ITransactionsState, TTransaction, IAccountsState } from '../types.d';
+import { ITransactionsState, IAccountsState } from '../../types/types';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,9 +30,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-let rows: any[] = [];
-
-function TransactionTable() {
+const TransactionTable = function () {
+  let rows: any[] = [];
   const transactions = useSelector((state: ITransactionsState) => state.transactions.transactions);
   const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
   const transactionsLS: string | null = localStorage.getItem('accountsTransactions');
@@ -65,9 +52,9 @@ function TransactionTable() {
             <StyledTableCell align="left">Date</StyledTableCell>
             <StyledTableCell align="left">Account</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
-            <StyledTableCell align="left">Currence</StyledTableCell>
+            <StyledTableCell align="left">Currency</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
-            <StyledTableCell align="left">Currence</StyledTableCell>
+            <StyledTableCell align="left">Currency</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -78,16 +65,16 @@ function TransactionTable() {
               </StyledTableCell>
               <StyledTableCell align="left">{row.date}</StyledTableCell>
               <StyledTableCell align="left">{row.account}</StyledTableCell>
-              <StyledTableCell align="right">{row.amountFP}</StyledTableCell>
-              <StyledTableCell align="left">{row.currenceFP}</StyledTableCell>
-              <StyledTableCell align="right">{row.amountSP}</StyledTableCell>
-              <StyledTableCell align="left">{row.currenceSP}</StyledTableCell>
+              <StyledTableCell align="right">{row.amountFirstPair}</StyledTableCell>
+              <StyledTableCell align="left">{row.currencyFirstPair}</StyledTableCell>
+              <StyledTableCell align="right">{row.amountSecondPair}</StyledTableCell>
+              <StyledTableCell align="left">{row.currencySecondPair}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
-}
+};
 
 export default TransactionTable;

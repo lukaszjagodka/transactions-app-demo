@@ -1,62 +1,78 @@
-/* eslint-disable no-unused-expressions */
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-return-assign */
-/* eslint-disable max-len */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAccount } from '../../types.d';
+import { IAccount, TCreateAccounts } from '../../types/types';
 
 export interface IState {
   accounts: Array<IAccount>,
-  selectedAccount: IAccount
+  selectedAccount: IAccount,
+  accountValue: number
 }
 
-export const newIni: IState = {
+export const initialState: IState = {
   accounts: [
     {
-      id: 'Demo-account-pzc38tfeo', accNumber: 603975430160344, accValue: 15000, curr: 'PLN',
+      id: 'Demo-account-pzc38tfeo', accountNumber: 603975430160344, accountValue: 15000, currency: 'PLN',
     },
     {
-      id: 'Demo-account-m8fpdawbi', accNumber: 152573100742264, accValue: 6000, curr: 'USD',
+      id: 'Demo-account-m8fpdawbi', accountNumber: 152573100742264, accountValue: 6000, currency: 'USD',
     },
   ],
   selectedAccount: {
     id: '',
-    accNumber: 0,
-    accValue: 0,
-    curr: '',
+    accountNumber: 0,
+    accountValue: 0,
+    currency: '',
   },
+  accountValue: 0,
 };
 
 export const accountsSlice = createSlice({
   name: 'accounts',
-  initialState: newIni,
+  initialState,
   reducers: {
-    create: (state, { payload }: PayloadAction<{ id: string, accNumber: number, accValue: number, curr: string }>) => {
-      const accLS: string | null = localStorage.getItem('accounts');
-      if (accLS === null) {
-        localStorage.setItem('accounts', JSON.stringify([...newIni.accounts, payload]));
+    createAccount: ({ accounts }, { payload }: PayloadAction<TCreateAccounts>) => {
+      const accountsFromLS: string | null = localStorage.getItem('accounts');
+      if (accountsFromLS) {
+        localStorage.setItem('accounts', JSON.stringify([...accounts, payload]));
       } else {
-        const retrievedAccObject: string | null = localStorage.getItem('accounts');
-        if (retrievedAccObject) {
-          const oldArray = JSON.parse(retrievedAccObject);
-          localStorage.setItem('accounts', JSON.stringify([...oldArray, payload]));
-        }
+        localStorage.setItem('accounts', JSON.stringify([...initialState.accounts, payload]));
       }
-      state.accounts.push(payload);
+      accounts.push(payload);
     },
-    remove: ({ accounts }, { payload }: PayloadAction<{ id: string }>) => {
-      const index = accounts.findIndex((account) => account.id);
+    removeAccount: ({ accounts }, { payload }: PayloadAction<string>) => {
+      const accountsLocalStorage: string | null = localStorage.getItem('accounts');
+      if (accountsLocalStorage) {
+        const listOfAccounts = JSON.parse(accountsLocalStorage);
+        const index = listOfAccounts.findIndex((account: any) => account.id === payload);
+        if (index !== -1) { listOfAccounts.splice(index, 1); }
+        localStorage.setItem('accounts', JSON.stringify(listOfAccounts));
+      }
+      const accountsTransactions: string | null = localStorage.getItem('accountsTransactions');
+      if (accountsTransactions) {
+        const listOfTransactions = JSON.parse(accountsTransactions);
+        const newListTransatcion = listOfTransactions.filter((transaction: any) => transaction.account !== payload);
+        localStorage.setItem('accountsTransactions', JSON.stringify(newListTransatcion));
+      }
+      const index = accounts.findIndex((account) => account.id === payload);
       if (index !== -1) { accounts.splice(index, 1); }
     },
-    select: (state, { payload }: PayloadAction<IAccount>) => {
+    selectAccount: (state, { payload }: PayloadAction<IAccount>) => {
       localStorage.setItem('selectedAccount', JSON.stringify(payload));
       state.selectedAccount = payload;
+    },
+    updateAccountValue: (state, { payload }: PayloadAction<number>) => {
+      const selectedAccount: string | null = localStorage.getItem('selectedAccount');
+      if (selectedAccount) {
+        const { accountValue } = JSON.parse(selectedAccount);
+        state.accountValue = accountValue;
+      }
     },
   },
 });
 
 export const {
-  create: createAccountActionCreator,
-  remove: removeAccountActionCreator,
-  select: selectAccountActionCreator,
+  createAccount,
+  removeAccount,
+  selectAccount,
+  updateAccountValue,
 } = accountsSlice.actions;

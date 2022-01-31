@@ -1,9 +1,4 @@
-/* eslint-disable func-names */
-/* eslint-disable react/no-this-in-sfc */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/no-unused-prop-types */
-/* eslint-disable max-len */
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -19,45 +14,43 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import { createAccountActionCreator } from './accountsSlice';
-import { matchExpression } from '../../helpers/otherFunctions';
-import { IAccount } from '../../types.d';
+import { createAccount } from './accountsSlice';
+import { matchExpression } from '../../helpers/matchExpression';
+import { IAccount } from '../../types/types';
 import { generateAccountNumber, generateAccountName } from '../../helpers/generateAccountDate';
 
-import { initialCurrencesId } from '../../helpers/initialState';
+import { initialCurrenciesId } from '../../helpers/initialState';
 
 type TProps = {
   openList: any,
 }
 
-const AddAccount = function (props: TProps) {
+const AddAccount = function ({ openList }: TProps) {
   const dispatch = useDispatch();
-  const [addForm, setAddForm] = React.useState<boolean>(true);
-  const [accBalance, setAccountBalance] = React.useState<number>(0);
-  const [helperText, setHelperText] = React.useState<string>('');
-  const [error, setError] = React.useState<boolean>(false);
-  const initialStateByAccountNumber = generateAccountNumber;
-  const [numberAcc, setNumberAcc] = React.useState<number>(initialStateByAccountNumber);
-  const initialStateByAccountName = generateAccountName;
-  const [accountName, setAccountName] = React.useState<string>(initialStateByAccountName);
-  const [curr, setCurrence] = React.useState<string>('USD');
+  const [isAddForm, setIsAddForm] = useState<boolean>(true);
+  const [accountBalance, setAccountBalance] = useState<number>(0);
+  const [helperText, setHelperText] = useState<string>('');
+  const [isError, setIsError] = useState<boolean>(false);
+  const [numberAccount, setNumberAccount] = useState<number>(generateAccountNumber());
+  const [accountName, setAccountName] = useState<string>(generateAccountName());
+  const [curr, setCurrency] = useState<string>('USD');
 
   const handleNewRandom = () => {
-    setAccountName(generateAccountName);
-    setNumberAcc(generateAccountNumber);
+    setAccountName(generateAccountName());
+    setNumberAccount(generateAccountNumber());
   };
 
   const handleAddAcc = () => {
-    if (!error && accBalance !== 0 && Number(accBalance) !== 0) {
+    if (!isError && accountBalance !== 0 && +accountBalance !== 0) {
       const newAccount: IAccount = {
-        id: accountName, accNumber: numberAcc, accValue: Number(accBalance), curr,
+        id: accountName, accountNumber: numberAccount, accountValue: +accountBalance, currency: curr,
       };
-      dispatch(createAccountActionCreator(newAccount));
+      dispatch(createAccount(newAccount));
       setAccountBalance(0);
       handleNewRandom();
 
-      setAddForm(false);
-      props.openList(false);
+      setIsAddForm(false);
+      openList(false);
     }
   };
 
@@ -65,31 +58,30 @@ const AddAccount = function (props: TProps) {
     const target = e.target as HTMLTextAreaElement;
     if (matchExpression(target.value) === false) {
       setHelperText('Invalid format. Only number.');
-      setError(true);
+      setIsError(true);
     } else {
       setHelperText('');
-      setError(false);
-      setAccountBalance(e.target.value);
+      setIsError(false);
+      setAccountBalance(+e.target.value);
     }
   };
 
   const handleClose = () => {
-    setAddForm(false);
-    props.openList(false);
+    setIsAddForm(false);
+    openList(false);
   };
 
-  // select box
   const handleChange = (event: SelectChangeEvent) => {
-    setCurrence(event.target.value as string);
+    setCurrency(event.target.value as string);
   };
 
   return (
     <div>
-      <Dialog open={addForm}>
-        <DialogTitle>Creacte a new demo accout</DialogTitle>
+      <Dialog open={isAddForm}>
+        <DialogTitle>Create a new demo account</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Create new account or choose from list
+            Create new account or choose exist account from list
           </DialogContentText>
           <TextField
             disabled
@@ -112,7 +104,7 @@ const AddAccount = function (props: TProps) {
             label="Accout number"
             fullWidth
             variant="standard"
-            value={numberAcc}
+            value={numberAccount}
             InputProps={{
               readOnly: true,
             }}
@@ -121,7 +113,7 @@ const AddAccount = function (props: TProps) {
             <TextField
               required
               helperText={helperText}
-              error={error}
+              error={isError}
               autoFocus
               margin="dense"
               id="accountBalance"
@@ -132,20 +124,20 @@ const AddAccount = function (props: TProps) {
             />
             <Box sx={{ minWidth: 150 }}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Currence</InputLabel>
+                <InputLabel id="demo-simple-select-label">Currency</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={curr}
-                  label="Currence"
+                  label="Currency"
                   onChange={handleChange}
                 >
-                  {initialCurrencesId.map((currence) => (
+                  {initialCurrenciesId.map((currency) => (
                     <MenuItem
-                      key={currence}
-                      value={currence}
+                      key={currency}
+                      value={currency}
                     >
-                      {currence}
+                      {currency}
                     </MenuItem>
                   ))}
                 </Select>

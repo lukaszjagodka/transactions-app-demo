@@ -6,8 +6,6 @@ module.exports = {
   },
   extends: [
     'airbnb',
-    // 'eslint:recommended',
-    // 'plugin:@typescript-eslint/recommended'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -41,6 +39,9 @@ module.exports = {
     'no-unused-vars': 'off',
     'no-restricted-imports': 'off',
     'no-use-before-define': 'off',
+    'import/prefer-default-export': 'off',
+    'max-len': 'off',
+    'func-names': 0,
     '@typescript-eslint/no-unused-vars': ['warn'],
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',

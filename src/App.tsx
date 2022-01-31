@@ -1,18 +1,20 @@
-/* eslint-disable no-alert */
-/* eslint-disable react/no-unused-state */
-/* eslint-disable react/no-unused-class-component-methods */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable react/function-component-definition */
-import React from 'react';
+import React, { Component } from 'react';
+import Dashboard from './components/dashboard/Routes';
+import { fetchRates } from './helpers/fetchRates';
 import './App.css';
-import Dashboard from './components/Dashboard/Dashboard';
 
-function App() {
-  return (
-    <div className="App">
-      <Dashboard />
-    </div>
-  );
+class App extends Component {
+  componentDidMount() {
+    fetchRates();
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <Dashboard />
+      </div>
+    );
+  }
 }
 
 export default App;

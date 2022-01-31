@@ -2,4 +2,3 @@ node_modules
 dist
 coverage
 .eslintrc.js
-App.test.tsx

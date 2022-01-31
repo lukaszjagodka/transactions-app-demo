@@ -1,8 +1,6 @@
-/* eslint-disable prefer-const */
-/* eslint-disable max-len */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { generateAccountNumber } from '../helpers/generateAccountDate';
-import { TTransaction } from '../types.d';
+import { generateAccountNumber } from '../../helpers/generateAccountDate';
+import { TTransaction } from '../../types/types';
 
 export interface ITransactionsState {
   transactions: Array<TTransaction>
@@ -14,28 +12,28 @@ export const initialState: ITransactionsState = {
       account: 'Demo-account-m8fpdawbi',
       id: 849583779889844,
       date: '12/13/2021, 22:29:12',
-      amountFP: 333,
-      currenceFP: 'USD',
-      amountSP: 1363.97,
-      currenceSP: 'PLN',
+      amountFirstPair: 333,
+      currencyFirstPair: 'USD',
+      amountSecondPair: 1363.97,
+      currencySecondPair: 'PLN',
     },
     {
       account: 'Demo-account-m8fpdawbi',
       id: 874543213456123,
       date: '12/12/2021, 22:25:12',
-      amountFP: 222,
-      currenceFP: 'USD',
-      amountSP: 196.65,
-      currenceSP: 'EUR',
+      amountFirstPair: 222,
+      currencyFirstPair: 'USD',
+      amountSecondPair: 196.65,
+      currencySecondPair: 'EUR',
     },
     {
       account: 'Demo-account-pzc38tfeo',
       id: 874543213456666,
       date: '12/12/2021, 22:26:12',
-      amountFP: 789,
-      currenceFP: 'USD',
-      amountSP: 196.65,
-      currenceSP: 'EUR',
+      amountFirstPair: 789,
+      currencyFirstPair: 'USD',
+      amountSecondPair: 196.65,
+      currencySecondPair: 'EUR',
     },
   ],
 };
@@ -44,8 +42,8 @@ export const transactionsSlice = createSlice({
   name: 'transactions',
   initialState,
   reducers: {
-    create: {
-      reducer: (state, { payload }: PayloadAction<{ account: string, id: number, date: string, amountFP: number, currenceFP: string, amountSP: number, currenceSP: string }>) => {
+    createTransaction: {
+      reducer: (state, { payload }: PayloadAction<TTransaction>) => {
         const transactionsLS: string | null = localStorage.getItem('accountsTransactions');
         if (!transactionsLS) {
           localStorage.setItem('accountsTransactions', JSON.stringify([...initialState.transactions, payload]));
@@ -59,18 +57,18 @@ export const transactionsSlice = createSlice({
         state.transactions.push(payload);
       },
       prepare: ({
-        account, amountFP, currenceFP, amountSP, currenceSP,
-      }: {account: string, amountFP: number, currenceFP: string, amountSP: number, currenceSP: string}) => ({
+        account, amountFirstPair, currencyFirstPair, amountSecondPair, currencySecondPair,
+      }: {account: string, amountFirstPair: number, currencyFirstPair: string, amountSecondPair: number, currencySecondPair: string}) => ({
         payload: {
           account,
           id: generateAccountNumber(),
           date: new Date().toLocaleString(undefined, {
             year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit', timeZone: 'Europe/Warsaw',
           }),
-          amountFP,
-          currenceFP,
-          amountSP,
-          currenceSP,
+          amountFirstPair,
+          currencyFirstPair,
+          amountSecondPair,
+          currencySecondPair,
         },
       }),
     },
@@ -78,5 +76,5 @@ export const transactionsSlice = createSlice({
 });
 
 export const {
-  create: createTransactionActionCreator,
+  createTransaction,
 } = transactionsSlice.actions;
