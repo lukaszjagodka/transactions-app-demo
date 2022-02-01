@@ -1,9 +1,11 @@
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-console */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAccount, TCreateAccounts } from '../../types/types';
+import { IAccount, TFetchAccounts } from '../../types/types';
 import { get } from '../../helpers/fetch/get';
+import { post } from '../../helpers/fetch/post';
 
-export interface IState {
+interface IState {
   accounts: Array<IAccount>,
   selectedAccount: IAccount,
   accountValue: number,
@@ -36,14 +38,8 @@ export const accountsSlice = createSlice({
   name: 'accounts',
   initialState,
   reducers: {
-    createAccount: ({ accounts }, { payload }: PayloadAction<TCreateAccounts>) => {
-      const accountsFromLS: string | null = localStorage.getItem('accounts');
-      if (accountsFromLS) {
-        localStorage.setItem('accounts', JSON.stringify([...accounts, payload]));
-      } else {
-        localStorage.setItem('accounts', JSON.stringify([...initialState.accounts, payload]));
-      }
-      accounts.push(payload);
+    createAccount: ({ accounts }, { payload }: PayloadAction<Partial<IAccount>>) => {
+      post(payload, 'accounts');
     },
     removeAccount: ({ accounts }, { payload }: PayloadAction<string>) => {
       const accountsLocalStorage: string | null = localStorage.getItem('accounts');
