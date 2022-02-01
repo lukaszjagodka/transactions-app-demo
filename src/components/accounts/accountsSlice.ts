@@ -27,9 +27,9 @@ export const initialState: IState = {
 };
 
 export const fetchAllAccounts = createAsyncThunk(
-  'users/fetchAllAccounts/fulfilled',
-  async (target: string) => {
-    const data = await get(target);
+  'accounts/fetchAllAccounts',
+  async () => {
+    const data = await get('accounts');
     return data;
   },
 );
