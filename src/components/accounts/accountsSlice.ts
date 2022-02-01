@@ -1,30 +1,36 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAccount, TCreateAccounts } from '../../types/types';
+import { get } from '../../helpers/fetch/get';
 
 export interface IState {
   accounts: Array<IAccount>,
   selectedAccount: IAccount,
-  accountValue: number
+  accountValue: number,
+  status: string
 }
 
 export const initialState: IState = {
-  accounts: [
-    {
-      id: 'Demo-account-pzc38tfeo', accountNumber: 603975430160344, accountValue: 15000, currency: 'PLN',
-    },
-    {
-      id: 'Demo-account-m8fpdawbi', accountNumber: 152573100742264, accountValue: 6000, currency: 'USD',
-    },
-  ],
+  accounts: [],
+  status: 'idle',
   selectedAccount: {
-    id: '',
+    id: 0,
+    name: '',
     accountNumber: 0,
     accountValue: 0,
     currency: '',
+    createdAt: '',
   },
   accountValue: 0,
 };
+
+export const fetchAllAccounts = createAsyncThunk(
+  'users/fetchAllAccounts/fulfilled',
+  async (target: string) => {
+    const data = await get(target);
+    return data;
+  },
+);
 
 export const accountsSlice = createSlice({
   name: 'accounts',
@@ -53,7 +59,7 @@ export const accountsSlice = createSlice({
         const newListTransatcion = listOfTransactions.filter((transaction: any) => transaction.account !== payload);
         localStorage.setItem('accountsTransactions', JSON.stringify(newListTransatcion));
       }
-      const index = accounts.findIndex((account) => account.id === payload);
+      const index = accounts.findIndex((account) => account.name === payload);
       if (index !== -1) { accounts.splice(index, 1); }
     },
     selectAccount: (state, { payload }: PayloadAction<IAccount>) => {
@@ -67,6 +73,27 @@ export const accountsSlice = createSlice({
         state.accountValue = accountValue;
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllAccounts.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchAllAccounts.fulfilled, (state, { payload }: PayloadAction<TFetchAccounts>) => {
+        state.status = 'successed';
+        console.log(payload);
+        const { data } = payload;
+
+        state.accounts.length = 0;
+        if (state.accounts.length !== data.length) {
+          data.forEach((element: any) => {
+            state.accounts.push(element);
+          });
+        }
+      })
+      .addCase(fetchAllAccounts.rejected, (state, { payload }) => {
+        state.status = 'failed';
+      });
   },
 });
 

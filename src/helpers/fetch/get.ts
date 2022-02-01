@@ -11,7 +11,8 @@ export const get = async (target: string) => {
       mode: 'cors',
       credentials: 'same-origin',
     });
-    return response;
+    const json = await response.json();
+    return json;
   } catch (err) {
     console.error('Error: ', err);
   }
