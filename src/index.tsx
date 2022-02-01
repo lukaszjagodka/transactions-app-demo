@@ -11,7 +11,7 @@ import App from './App';
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [logger],
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
   // devTools: false
 });
 

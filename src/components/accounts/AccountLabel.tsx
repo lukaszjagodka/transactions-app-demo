@@ -4,33 +4,44 @@ import ListItem from '@mui/material/ListItem';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { selectAccount } from './accountsSlice';
+import { IAccount } from '../../types/types';
 
 type TProps = {
   account: any,
   closeList: any,
 };
 
-const AccountLabel = function (props: TProps) {
+const AccountLabel = function ({ account, closeList }: TProps) {
   const dispatch = useDispatch();
 
   const closeListFrmChild = () => {
-    const { closeList } = props;
     closeList(false);
   };
 
-  const handleShowAccount = (account: any) => {
+  const handleShowAccount = (selectedAccount: IAccount) => {
+    const {
+      id,
+      name,
+      accountNumber,
+      accountValue,
+      currency,
+    } = selectedAccount;
     localStorage.setItem('selectedAccount', JSON.stringify(account.id));
     dispatch(selectAccount({
-      id: account.id, accountNumber: account.accountNumber, accountValue: account.accountValue, currency: account.currency,
+      id,
+      name,
+      accountNumber,
+      accountValue,
+      currency,
+      createdAt: '',
     }));
     closeListFrmChild();
   };
 
-  const { account } = props;
   return (
     <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/a/${account.id}`}>
       <ListItem component="span" key={account.id} button>
-        <ListItemText primary={account.id} secondary={account.accountNumber} onClick={() => handleShowAccount(account)} />
+        <ListItemText primary={account.name} secondary={account.accountNumber} onClick={() => handleShowAccount(account)} />
         <div style={{ right: '15px' }}>
           {account.accountValue}
           {' '}

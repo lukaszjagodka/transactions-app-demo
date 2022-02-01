@@ -7,6 +7,8 @@ import Grid from '@mui/material/Grid';
 import { Divider } from '@mui/material';
 import TransactionTable from '../transactions/TransactionsTable';
 import ChangeCurrencies from '../ChangeCurrencies';
+import { fetchAllAccounts } from '../accounts/accountsSlice';
+import { IAccount } from '../../types/types';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -17,10 +19,11 @@ const Item = styled(Paper)(({ theme }) => ({
 
 type TProps = {
   accountValueRedux: number,
+  selectedAccount: IAccount,
 }
 
 type TState = {
-  id: string,
+  id: number,
   accountNumber: number,
   accountValue: number,
   currency: string,
@@ -30,7 +33,7 @@ class Dashboard extends Component <TProps, TState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      id: '',
+      id: 0,
       accountNumber: 0,
       accountValue: 0,
       currency: '',
@@ -38,6 +41,7 @@ class Dashboard extends Component <TProps, TState> {
   }
 
   componentDidMount() {
+    fetchAllAccounts();
     this.initialize();
   }
 
@@ -113,11 +117,13 @@ class Dashboard extends Component <TProps, TState> {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
+  fetchAllAccounts: () => dispatch(fetchAllAccounts()),
 });
 
 function mapStateToProps(state: any) {
   return {
     accountValueRedux: state.accounts.accountValue,
+    selectedAccount: state.accounts.selectedAccount,
   };
 }
 
