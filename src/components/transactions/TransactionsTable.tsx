@@ -38,9 +38,9 @@ const TransactionTable = function () {
 
   if (transactionsLS !== null) {
     const transactionsFromLocalStorageParsed = JSON.parse(transactionsLS);
-    rows = transactionsFromLocalStorageParsed.filter((x:any) => x.account === selectedAcc.id);
+    rows = transactionsFromLocalStorageParsed.filter((x:any) => x.name === selectedAcc.name);
   } else {
-    rows = transactions.filter((x:any) => x.account === selectedAcc.id);
+    rows = transactions.filter((x:any) => x.name === selectedAcc.name);
   }
 
   return (
@@ -53,6 +53,7 @@ const TransactionTable = function () {
             <StyledTableCell align="left">Account</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
+            <StyledTableCell align="left">To</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
           </TableRow>
@@ -64,9 +65,12 @@ const TransactionTable = function () {
                 {row.id}
               </StyledTableCell>
               <StyledTableCell align="left">{row.date}</StyledTableCell>
-              <StyledTableCell align="left">{row.account}</StyledTableCell>
+              <StyledTableCell align="left">{row.name}</StyledTableCell>
               <StyledTableCell align="right">{row.amountFirstPair}</StyledTableCell>
               <StyledTableCell align="left">{row.currencyFirstPair}</StyledTableCell>
+              <StyledTableCell align="left">
+                {'->'}
+              </StyledTableCell>
               <StyledTableCell align="right">{row.amountSecondPair}</StyledTableCell>
               <StyledTableCell align="left">{row.currencySecondPair}</StyledTableCell>
             </StyledTableRow>

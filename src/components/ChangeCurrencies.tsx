@@ -66,12 +66,12 @@ const ChangeCurrencies = function () {
           } else {
             const actualBalance = accountValue - Number(amountFirstPair);
             const updatedSelectedAccount = {
-              id: selectedAcc.id, accountNumber, accountValue: actualBalance, currency: currFirstPair,
+              id: selectedAcc.id, name: selectedAcc.name, accountNumber, accountValue: actualBalance, currency: currFirstPair,
             };
             localStorage.setItem('selectedAccount', JSON.stringify(updatedSelectedAccount));
             const amountSP = convertCurrency(amountFirstPair, actualPair);
             dispatch(createTransaction({
-              account: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, amountSecondPair: amountSP, currencySecondPair: currSecondPair,
+              name: selectedAcc.name, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, amountSecondPair: amountSP, currencySecondPair: currSecondPair,
             }));
             const newAccountValue = Number(amountFirstPair);
             dispatch(updateAccountValue(newAccountValue));

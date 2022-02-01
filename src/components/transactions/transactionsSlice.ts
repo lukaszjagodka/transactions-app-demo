@@ -7,35 +7,7 @@ export interface ITransactionsState {
 }
 
 export const initialState: ITransactionsState = {
-  transactions: [
-    {
-      account: 'Demo-account-m8fpdawbi',
-      id: 849583779889844,
-      date: '12/13/2021, 22:29:12',
-      amountFirstPair: 333,
-      currencyFirstPair: 'USD',
-      amountSecondPair: 1363.97,
-      currencySecondPair: 'PLN',
-    },
-    {
-      account: 'Demo-account-m8fpdawbi',
-      id: 874543213456123,
-      date: '12/12/2021, 22:25:12',
-      amountFirstPair: 222,
-      currencyFirstPair: 'USD',
-      amountSecondPair: 196.65,
-      currencySecondPair: 'EUR',
-    },
-    {
-      account: 'Demo-account-pzc38tfeo',
-      id: 874543213456666,
-      date: '12/12/2021, 22:26:12',
-      amountFirstPair: 789,
-      currencyFirstPair: 'USD',
-      amountSecondPair: 196.65,
-      currencySecondPair: 'EUR',
-    },
-  ],
+  transactions: [],
 };
 
 export const transactionsSlice = createSlice({
@@ -57,10 +29,10 @@ export const transactionsSlice = createSlice({
         state.transactions.push(payload);
       },
       prepare: ({
-        account, amountFirstPair, currencyFirstPair, amountSecondPair, currencySecondPair,
-      }: {account: string, amountFirstPair: number, currencyFirstPair: string, amountSecondPair: number, currencySecondPair: string}) => ({
+        name, amountFirstPair, currencyFirstPair, amountSecondPair, currencySecondPair,
+      }: {name: string, amountFirstPair: number, currencyFirstPair: string, amountSecondPair: number, currencySecondPair: string}) => ({
         payload: {
-          account,
+          name,
           id: generateAccountNumber(),
           date: new Date().toLocaleString(undefined, {
             year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit', timeZone: 'Europe/Warsaw',

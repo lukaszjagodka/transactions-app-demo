@@ -21,7 +21,7 @@ export interface IAccountsState {
 }
 
 export type TTransaction = {
-  account: string,
+  name: string,
   id: number,
   date: string,
   amountFirstPair: number,
