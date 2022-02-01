@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import { createAccount, fetchAllAccounts } from './accountsSlice';
+import { createAccount, fetchAccounts } from './accountsSlice';
 import { matchExpression } from '../../helpers/matchExpression';
 import { IAccount } from '../../types/types';
 import { generateAccountNumber, generateAccountName } from '../../helpers/generateAccountDate';
@@ -47,7 +47,7 @@ const AddAccount = function ({ openList }: TProps) {
       };
       dispatch(createAccount(newAccount));
       setTimeout(() => {
-        dispatch(fetchAllAccounts());
+        dispatch(fetchAccounts());
       }, 500);
       setAccountBalance(0);
       handleNewRandom();

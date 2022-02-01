@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import Dashboard from './components/dashboard/Routes';
 import { fetchRates } from './helpers/fetchRates';
 import './App.css';
-import { fetchAllAccounts } from './components/accounts/accountsSlice';
+import { fetchAccounts } from './components/accounts/accountsSlice';
 import { IAccount } from './types/types';
 
 class App extends Component {
   componentDidMount() {
     fetchRates();
-    fetchAllAccounts();
+    fetchAccounts();
   }
 
   render() {
@@ -22,7 +22,7 @@ class App extends Component {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchAllAccounts: () => dispatch(fetchAllAccounts()),
+  fetchAccounts: () => dispatch(fetchAccounts()),
 });
 
 export default connect(null, mapDispatchToProps)(App);

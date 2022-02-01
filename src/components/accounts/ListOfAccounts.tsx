@@ -8,7 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import List from '@mui/material/List';
 import { useSelector, useDispatch } from 'react-redux';
 import AddAccount from './AddAccount';
-import { fetchAllAccounts, selectAccount } from './accountsSlice';
+import { fetchAccounts, selectAccount } from './accountsSlice';
 import { IAccount, IAccountsState } from '../../types/types';
 import AccountLabel from './AccountLabel';
 
@@ -40,7 +40,7 @@ const ListOfAccounts = function () {
 
   useEffect(() => {
     if (accountsStatus === 'idle') {
-      dispatch(fetchAllAccounts());
+      dispatch(fetchAccounts());
     }
   }, []);
 

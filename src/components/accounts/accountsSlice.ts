@@ -26,8 +26,8 @@ export const initialState: IState = {
   accountValue: 0,
 };
 
-export const fetchAllAccounts = createAsyncThunk(
-  'accounts/fetchAllAccounts',
+export const fetchAccounts = createAsyncThunk(
+  'accounts/fetchAccounts',
   async () => {
     const data = await get('accounts');
     return data;
@@ -72,10 +72,10 @@ export const accountsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllAccounts.pending, (state, action) => {
+      .addCase(fetchAccounts.pending, (state, action) => {
         state.status = 'loading';
       })
-      .addCase(fetchAllAccounts.fulfilled, (state, { payload }: PayloadAction<TFetchAccounts>) => {
+      .addCase(fetchAccounts.fulfilled, (state, { payload }: PayloadAction<TFetchAccounts>) => {
         state.status = 'successed';
         console.log(payload);
         const { data } = payload;
@@ -87,7 +87,7 @@ export const accountsSlice = createSlice({
           });
         }
       })
-      .addCase(fetchAllAccounts.rejected, (state, { payload }) => {
+      .addCase(fetchAccounts.rejected, (state, { payload }) => {
         state.status = 'failed';
       });
   },
