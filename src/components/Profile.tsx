@@ -70,7 +70,7 @@ const AccountMenu = function () {
       const selectedAccountObj = JSON.parse(retrievedObject);
       const name = selectedAccountObj.id;
       const { length } = name;
-      // setUserId(selectedAccountObj.id.substring(13, length));
+      setUserId(selectedAccountObj.name.substring(13, length));
     }
   }
 
