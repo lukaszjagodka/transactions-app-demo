@@ -20,7 +20,6 @@ const ChangeCurrencies = function () {
   const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
   const baseOfRates = useSelector((state: IAccountsState) => state.accounts.currencyString);
   const selectedAccount: string | null = localStorage.getItem('selectedAccount');
-  const actual3xItem: string | null = localStorage.getItem('actual3x');
   const [rate, setRate] = useState<string>('');
 
   // FIRST PAIR
@@ -46,7 +45,7 @@ const ChangeCurrencies = function () {
   };
 
   useEffect(() => {
-    if (amountFirstPair !== '' && currFirstPair !== currSecondPair && actual3xItem) {
+    if (amountFirstPair !== '' && currFirstPair !== currSecondPair && baseOfRates) {
       const actualPair = findPairInArray(baseOfRates);
       if (actualPair.length) {
         setRate(actualPair[0].value);
@@ -60,7 +59,7 @@ const ChangeCurrencies = function () {
     if (selectedAccount) {
       const { accountValue, accountNumber } = JSON.parse(selectedAccount);
       if (amountFirstPair < accountValue) {
-        if (amountFirstPair && currFirstPair !== currSecondPair && actual3xItem) {
+        if (amountFirstPair && currFirstPair !== currSecondPair && baseOfRates) {
           const actualPair = findPairInArray(baseOfRates);
           if (!actualPair.length) {
             alert('We havent this rate in our data. Please change currencies.');
