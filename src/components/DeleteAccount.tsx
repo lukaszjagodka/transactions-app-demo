@@ -63,13 +63,13 @@ class DeleteAccount extends Component <TProps, TState> {
     const selectedAccount: string | null = localStorage.getItem('selectedAccount');
     if (selectedAccount) {
       const objSelectedAccount = JSON.parse(selectedAccount);
-      const { name } = objSelectedAccount;
+      const { name, id } = objSelectedAccount;
       if (name.toLowerCase() === accountToDelete.toLowerCase()) {
         this.setState({
           open: true,
           accuntMatches: 1,
         });
-        removeAccount(name);
+        removeAccount({ id });
         setTimeout(() => logOut(), 3000);
       } else {
         this.setState({
@@ -155,7 +155,7 @@ class DeleteAccount extends Component <TProps, TState> {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
-  removeAccount: (id: string) => dispatch(removeAccount(id)),
+  removeAccount: (id: number) => dispatch(removeAccount(id)),
 });
 
 function mapStateToProps() {
