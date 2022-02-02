@@ -53,7 +53,7 @@ const TransactionTable = function () {
             <StyledTableCell align="left">Account</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
-            <StyledTableCell align="left">To</StyledTableCell>
+            <StyledTableCell align="left">Rate</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
           </TableRow>
@@ -68,9 +68,7 @@ const TransactionTable = function () {
               <StyledTableCell align="left">{row.name}</StyledTableCell>
               <StyledTableCell align="right">{row.amountFirstPair}</StyledTableCell>
               <StyledTableCell align="left">{row.currencyFirstPair}</StyledTableCell>
-              <StyledTableCell align="left">
-                {'->'}
-              </StyledTableCell>
+              <StyledTableCell align="left">{row.rate}</StyledTableCell>
               <StyledTableCell align="right">{row.amountSecondPair}</StyledTableCell>
               <StyledTableCell align="left">{row.currencySecondPair}</StyledTableCell>
             </StyledTableRow>

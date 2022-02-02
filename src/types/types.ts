@@ -28,6 +28,7 @@ export type TTransaction = {
   date: string,
   amountFirstPair: number,
   currencyFirstPair: string,
+  rate: number,
   amountSecondPair: number,
   currencySecondPair: string,
 }

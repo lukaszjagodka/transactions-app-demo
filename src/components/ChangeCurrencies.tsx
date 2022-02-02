@@ -71,7 +71,7 @@ const ChangeCurrencies = function () {
             localStorage.setItem('selectedAccount', JSON.stringify(updatedSelectedAccount));
             const amountSP = convertCurrency(amountFirstPair, actualPair);
             dispatch(createTransaction({
-              name: selectedAcc.name, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, amountSecondPair: amountSP, currencySecondPair: currSecondPair,
+              name: selectedAcc.name, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, rate: Number(parseFloat(actualPair[0].value).toFixed(4)), amountSecondPair: amountSP, currencySecondPair: currSecondPair,
             }));
             const newAccountValue = Number(amountFirstPair);
             dispatch(updateAccountValue(newAccountValue));

@@ -29,8 +29,8 @@ export const transactionsSlice = createSlice({
         state.transactions.push(payload);
       },
       prepare: ({
-        name, amountFirstPair, currencyFirstPair, amountSecondPair, currencySecondPair,
-      }: {name: string, amountFirstPair: number, currencyFirstPair: string, amountSecondPair: number, currencySecondPair: string}) => ({
+        name, amountFirstPair, currencyFirstPair, rate, amountSecondPair, currencySecondPair,
+      }: {name: string, amountFirstPair: number, currencyFirstPair: string, rate: number, amountSecondPair: number, currencySecondPair: string}) => ({
         payload: {
           name,
           id: generateAccountNumber(),
@@ -39,6 +39,7 @@ export const transactionsSlice = createSlice({
           }),
           amountFirstPair,
           currencyFirstPair,
+          rate,
           amountSecondPair,
           currencySecondPair,
         },
