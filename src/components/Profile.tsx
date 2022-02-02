@@ -15,7 +15,7 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { logOut } from '../helpers/logout';
 import { IAccountsState } from '../types/types';
-import DeleteAccount from './DeleteAccount';
+import DeleteAccount from './accounts/DeleteAccount';
 
 const style = {
   position: 'absolute' as 'absolute',
