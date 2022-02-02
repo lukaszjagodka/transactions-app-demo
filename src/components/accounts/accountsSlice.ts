@@ -1,7 +1,8 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAccount, TFetchAccounts } from '../../types/types';
+import { IAccount, TFetchAccounts, TPair } from '../../types/types';
 import { get } from '../../helpers/fetch/get';
 import { post } from '../../helpers/fetch/post';
 
@@ -9,12 +10,15 @@ interface IState {
   accounts: Array<IAccount>,
   selectedAccount: IAccount,
   accountValue: number,
-  status: string
+  statusFetchAccounts: String,
+  statusFetchRates: String,
+  currencyString: String
 }
 
 export const initialState: IState = {
   accounts: [],
-  status: 'idle',
+  statusFetchAccounts: 'idle',
+  statusFetchRates: 'idle',
   selectedAccount: {
     id: 0,
     name: '',
@@ -24,7 +28,21 @@ export const initialState: IState = {
     createdAt: '',
   },
   accountValue: 0,
+  currencyString: '',
 };
+
+export const fetchRates = createAsyncThunk(
+  'accounts/fetchRates',
+  async () => {
+    try {
+      const json = await get('rates');
+      const { currencyString } = json.data;
+      return currencyString;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
 
 export const fetchAccounts = createAsyncThunk(
   'accounts/fetchAccounts',
@@ -72,14 +90,22 @@ export const accountsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchRates.pending, (state, action) => {
+        state.statusFetchRates = 'loading';
+      })
+      .addCase(fetchRates.fulfilled, (state, { payload }: PayloadAction<any>) => {
+        state.statusFetchRates = 'successed';
+        state.currencyString = payload;
+      })
+      .addCase(fetchRates.rejected, (state, { payload }) => {
+        state.statusFetchRates = 'failed';
+      })
       .addCase(fetchAccounts.pending, (state, action) => {
-        state.status = 'loading';
+        state.statusFetchAccounts = 'loading';
       })
       .addCase(fetchAccounts.fulfilled, (state, { payload }: PayloadAction<TFetchAccounts>) => {
-        state.status = 'successed';
-        console.log(payload);
+        state.statusFetchAccounts = 'successed';
         const { data } = payload;
-
         state.accounts.length = 0;
         if (state.accounts.length !== data.length) {
           data.forEach((element: any) => {
@@ -88,7 +114,7 @@ export const accountsSlice = createSlice({
         }
       })
       .addCase(fetchAccounts.rejected, (state, { payload }) => {
-        state.status = 'failed';
+        state.statusFetchAccounts = 'failed';
       });
   },
 });

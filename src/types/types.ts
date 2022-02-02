@@ -16,7 +16,9 @@ export interface IAccountsState {
   accounts: {
     accounts: Array<IAccount>,
     selectedAccount: IAccount,
-    status: string,
+    statusFetchAccounts: String,
+    statusFetchRates: String,
+    currencyString: Array<TPair>
   }
 }
 
