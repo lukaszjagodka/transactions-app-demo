@@ -63,13 +63,13 @@ class DeleteAccount extends Component <TProps, TState> {
     const selectedAccount: string | null = localStorage.getItem('selectedAccount');
     if (selectedAccount) {
       const objSelectedAccount = JSON.parse(selectedAccount);
-      const { id } = objSelectedAccount;
-      if (id.toLowerCase() === accountToDelete.toLowerCase()) {
+      const { name } = objSelectedAccount;
+      if (name.toLowerCase() === accountToDelete.toLowerCase()) {
         this.setState({
           open: true,
           accuntMatches: 1,
         });
-        removeAccount(id);
+        removeAccount(name);
         setTimeout(() => logOut(), 3000);
       } else {
         this.setState({
