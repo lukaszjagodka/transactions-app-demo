@@ -7,7 +7,6 @@ import Grid from '@mui/material/Grid';
 import { Divider } from '@mui/material';
 import TransactionTable from '../transactions/TransactionsTable';
 import ChangeCurrencies from '../ChangeCurrencies';
-import { fetchAccounts } from '../accounts/accountsSlice';
 import { IAccount } from '../../types/types';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -41,7 +40,6 @@ class Dashboard extends Component <TProps, TState> {
   }
 
   componentDidMount() {
-    fetchAccounts();
     this.initialize();
   }
 
@@ -116,10 +114,6 @@ class Dashboard extends Component <TProps, TState> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  fetchAccounts: () => dispatch(fetchAccounts()),
-});
-
 function mapStateToProps(state: any) {
   return {
     accountValueRedux: state.accounts.accountValue,
@@ -127,4 +121,4 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, {})(Dashboard);

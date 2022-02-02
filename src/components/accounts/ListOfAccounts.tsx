@@ -16,7 +16,7 @@ const ListOfAccounts = function () {
   const dispatch = useDispatch();
   const accounts = useSelector((state: IAccountsState) => state.accounts.accounts);
   const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
-  const accountsStatus = useSelector((state: IAccountsState) => state.accounts.status);
+  const accountsStatus = useSelector((state: IAccountsState) => state.accounts.statusFetchAccounts);
   const [isList, setIsList] = useState<boolean>(true);
   const [addForm, setAddForm] = useState<boolean>(false);
   const [listOfAccounts, setListOfAccounts] = useState<IAccount[]>(accounts);

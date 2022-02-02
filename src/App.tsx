@@ -1,15 +1,20 @@
-import React, { Component } from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
+import React, { Component, Dispatch } from 'react';
 import { connect } from 'react-redux';
 import Dashboard from './components/dashboard/Routes';
-import { fetchRates } from './helpers/fetchRates';
+// import { fetchRates } from './helpers/fetchRates';
 import './App.css';
-import { fetchAccounts } from './components/accounts/accountsSlice';
-import { IAccount } from './types/types';
+import { fetchAccounts, fetchRates } from './components/accounts/accountsSlice';
 
-class App extends Component {
+type TProps = {
+  getRates: any
+}
+
+class App extends Component <TProps, {}> {
   componentDidMount() {
-    fetchRates();
-    fetchAccounts();
+    const { getRates } = this.props;
+    getRates();
   }
 
   render() {
@@ -22,6 +27,7 @@ class App extends Component {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
+  getRates: () => dispatch(fetchRates()),
   fetchAccounts: () => dispatch(fetchAccounts()),
 });
 

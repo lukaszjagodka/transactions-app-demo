@@ -18,6 +18,7 @@ import { IAccountsState, TPair } from '../types/types';
 const ChangeCurrencies = function () {
   const dispatch = useDispatch();
   const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
+  const baseOfRates = useSelector((state: IAccountsState) => state.accounts.currencyString);
   const selectedAccount: string | null = localStorage.getItem('selectedAccount');
   const actual3xItem: string | null = localStorage.getItem('actual3x');
   const [rate, setRate] = useState<string>('');
@@ -32,8 +33,8 @@ const ChangeCurrencies = function () {
   const [amountSecondPair, setAmountSecondPair] = useState<number | string>('');
   const [currSecondPair, setCurrencySecondPair] = useState<string>('USD');
 
-  const findPairInArray = function (xItem: string) {
-    const actualPair = JSON.parse(xItem).filter((currency: any) => currency.pair === `${currFirstPair}/${currSecondPair}`);
+  const findPairInArray = function (base: any) {
+    const actualPair = JSON.parse(base).filter((currency: any) => currency.pair === `${currFirstPair}/${currSecondPair}`);
     return actualPair;
   };
 
@@ -46,7 +47,7 @@ const ChangeCurrencies = function () {
 
   useEffect(() => {
     if (amountFirstPair !== '' && currFirstPair !== currSecondPair && actual3xItem) {
-      const actualPair = findPairInArray(actual3xItem);
+      const actualPair = findPairInArray(baseOfRates);
       if (actualPair.length) {
         setRate(actualPair[0].value);
         const amountSP = convertCurrency(amountFirstPair, actualPair);
@@ -60,7 +61,7 @@ const ChangeCurrencies = function () {
       const { accountValue, accountNumber } = JSON.parse(selectedAccount);
       if (amountFirstPair < accountValue) {
         if (amountFirstPair && currFirstPair !== currSecondPair && actual3xItem) {
-          const actualPair = findPairInArray(actual3xItem);
+          const actualPair = findPairInArray(baseOfRates);
           if (!actualPair.length) {
             alert('We havent this rate in our data. Please change currencies.');
           } else {
