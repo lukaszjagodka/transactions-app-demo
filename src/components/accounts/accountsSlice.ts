@@ -59,21 +59,9 @@ export const accountsSlice = createSlice({
     createAccount: ({ accounts }, { payload }: PayloadAction<Partial<IAccount>>) => {
       post(payload, 'accounts');
     },
-    removeAccount: ({ accounts }, { payload }: PayloadAction<string>) => {
-      const accountsLocalStorage: string | null = localStorage.getItem('accounts');
-      if (accountsLocalStorage) {
-        const listOfAccounts = JSON.parse(accountsLocalStorage);
-        const index = listOfAccounts.findIndex((account: any) => account.id === payload);
-        if (index !== -1) { listOfAccounts.splice(index, 1); }
-        localStorage.setItem('accounts', JSON.stringify(listOfAccounts));
-      }
-      const accountsTransactions: string | null = localStorage.getItem('accountsTransactions');
-      if (accountsTransactions) {
-        const listOfTransactions = JSON.parse(accountsTransactions);
-        const newListTransatcion = listOfTransactions.filter((transaction: any) => transaction.account !== payload);
-        localStorage.setItem('accountsTransactions', JSON.stringify(newListTransatcion));
-      }
-      const index = accounts.findIndex((account) => account.name === payload);
+    removeAccount: ({ accounts }, { payload }: PayloadAction<any>) => {
+      post(payload, 'accounts/deleteaccount');
+      const index = accounts.findIndex((account) => account.id === payload);
       if (index !== -1) { accounts.splice(index, 1); }
     },
     selectAccount: (state, { payload }: PayloadAction<IAccount>) => {
@@ -105,12 +93,14 @@ export const accountsSlice = createSlice({
       })
       .addCase(fetchAccounts.fulfilled, (state, { payload }: PayloadAction<TFetchAccounts>) => {
         state.statusFetchAccounts = 'successed';
-        const { data } = payload;
-        state.accounts.length = 0;
-        if (state.accounts.length !== data.length) {
-          data.forEach((element: any) => {
-            state.accounts.push(element);
-          });
+        if (payload) {
+          const { data } = payload;
+          state.accounts.length = 0;
+          if (state.accounts.length !== data.length) {
+            data.forEach((element: any) => {
+              state.accounts.push(element);
+            });
+          }
         }
       })
       .addCase(fetchAccounts.rejected, (state, { payload }) => {
