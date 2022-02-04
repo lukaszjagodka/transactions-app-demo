@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { initialCurrenciesId } from '../helpers/initialState';
 import { matchExpression } from '../helpers/matchExpression';
-import { createTransaction } from './transactions/transactionsSlice';
+import { createTransaction, fetchTransactions } from './transactions/transactionsSlice';
 import { updateAccountValue } from './accounts/accountsSlice';
 import { IAccountsState, TPair } from '../types/types';
 
@@ -71,10 +71,13 @@ const ChangeCurrencies = function () {
             localStorage.setItem('selectedAccount', JSON.stringify(updatedSelectedAccount));
             const amountSP = convertCurrency(amountFirstPair, actualPair);
             dispatch(createTransaction({
-              name: selectedAcc.name, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, rate: Number(parseFloat(actualPair[0].value).toFixed(4)), amountSecondPair: amountSP, currencySecondPair: currSecondPair,
+              name: selectedAcc.name, accountId: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, rate: Number(parseFloat(actualPair[0].value).toFixed(4)), amountSecondPair: amountSP, currencySecondPair: currSecondPair,
             }));
             const newAccountValue = Number(amountFirstPair);
             dispatch(updateAccountValue(newAccountValue));
+            setTimeout(() => {
+              dispatch(fetchTransactions(selectedAcc.id));
+            }, 300);
             setAmountFirstPair('');
             setAmountSecondPair('');
             setRate('');

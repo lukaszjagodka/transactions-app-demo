@@ -6,6 +6,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { Divider } from '@mui/material';
 import TransactionTable from '../transactions/TransactionsTable';
+import { fetchTransactions } from '../transactions/transactionsSlice';
 import ChangeCurrencies from '../ChangeCurrencies';
 import { IAccount } from '../../types/types';
 
@@ -19,6 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
 type TProps = {
   accountValueRedux: number,
   selectedAccount: IAccount,
+  getTransactions: any
 }
 
 type TState = {
@@ -44,12 +46,14 @@ class Dashboard extends Component <TProps, TState> {
   }
 
   initialize = () => {
+    const { getTransactions } = this.props;
     const retObj: string | null = localStorage.getItem('selectedAccount');
     if (retObj) {
       const selectedAccountObj = JSON.parse(retObj);
       const {
         id, accountNumber, accountValue, currency,
       } = selectedAccountObj;
+      getTransactions(id);
       this.setState({
         id,
         accountNumber,
@@ -121,4 +125,8 @@ function mapStateToProps(state: any) {
   };
 }
 
-export default connect(mapStateToProps, {})(Dashboard);
+const mapDispatchToProps = (dispatch: any) => ({
+  getTransactions: (id: number) => dispatch(fetchTransactions(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

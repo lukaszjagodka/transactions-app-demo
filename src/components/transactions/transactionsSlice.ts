@@ -1,14 +1,27 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { generateAccountNumber } from '../../helpers/generateAccountDate';
 import { TTransaction } from '../../types/types';
+import { post } from '../../helpers/fetch/post';
+import { get } from '../../helpers/fetch/get';
 
 export interface ITransactionsState {
   transactions: Array<TTransaction>
+  fetchAccounts: string
 }
 
 export const initialState: ITransactionsState = {
   transactions: [],
+  fetchAccounts: 'idle',
 };
+
+export const fetchTransactions = createAsyncThunk(
+  'transactions/fetchTransactions',
+  async (id: number) => {
+    const data = await get(`transactions?key=${id}`);
+    return data;
+  },
+);
 
 export const transactionsSlice = createSlice({
   name: 'transactions',
@@ -16,22 +29,28 @@ export const transactionsSlice = createSlice({
   reducers: {
     createTransaction: {
       reducer: (state, { payload }: PayloadAction<TTransaction>) => {
-        const transactionsLS: string | null = localStorage.getItem('accountsTransactions');
-        if (!transactionsLS) {
-          localStorage.setItem('accountsTransactions', JSON.stringify([...initialState.transactions, payload]));
-        } else {
-          const retrivedTransactionsLS: string | null = localStorage.getItem('accountsTransactions');
-          if (retrivedTransactionsLS) {
-            const oldArray = JSON.parse(retrivedTransactionsLS);
-            localStorage.setItem('accountsTransactions', JSON.stringify([...oldArray, payload]));
-          }
-        }
+        post(payload, 'transactions');
         state.transactions.push(payload);
       },
       prepare: ({
-        name, amountFirstPair, currencyFirstPair, rate, amountSecondPair, currencySecondPair,
-      }: {name: string, amountFirstPair: number, currencyFirstPair: string, rate: number, amountSecondPair: number, currencySecondPair: string}) => ({
+        accountId,
+        name,
+        amountFirstPair,
+        currencyFirstPair,
+        rate,
+        amountSecondPair,
+        currencySecondPair,
+      }: {
+        accountId: number,
+        name: string,
+        amountFirstPair: number,
+        currencyFirstPair: string,
+        rate: number,
+        amountSecondPair: number,
+        currencySecondPair: string
+      }) => ({
         payload: {
+          accountId,
           name,
           id: generateAccountNumber(),
           date: new Date().toLocaleString(undefined, {
@@ -45,6 +64,27 @@ export const transactionsSlice = createSlice({
         },
       }),
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTransactions.pending, (state, action) => {
+        state.fetchAccounts = 'loading';
+      })
+      .addCase(fetchTransactions.fulfilled, (state, { payload }: PayloadAction<any>) => {
+        state.fetchAccounts = 'successed';
+        if (payload) {
+          const { response } = payload;
+          state.transactions.length = 0;
+          if (state.transactions.length !== response.length) {
+            response.forEach((element: any) => {
+              state.transactions.push(element);
+            });
+          }
+        }
+      })
+      .addCase(fetchTransactions.rejected, (state, { payload }) => {
+        state.fetchAccounts = 'failed';
+      });
   },
 });
 
