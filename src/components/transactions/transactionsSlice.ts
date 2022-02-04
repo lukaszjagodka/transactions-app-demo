@@ -33,7 +33,7 @@ export const transactionsSlice = createSlice({
         state.transactions.push(payload);
       },
       prepare: ({
-        accountId,
+        account,
         name,
         amountFirstPair,
         currencyFirstPair,
@@ -41,7 +41,7 @@ export const transactionsSlice = createSlice({
         amountSecondPair,
         currencySecondPair,
       }: {
-        accountId: number,
+        account: number,
         name: string,
         amountFirstPair: number,
         currencyFirstPair: string,
@@ -50,7 +50,7 @@ export const transactionsSlice = createSlice({
         currencySecondPair: string
       }) => ({
         payload: {
-          accountId,
+          account,
           name,
           id: generateAccountNumber(),
           date: new Date().toLocaleString(undefined, {
