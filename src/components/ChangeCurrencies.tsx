@@ -75,9 +75,6 @@ const ChangeCurrencies = function () {
             }));
             const newAccountValue = Number(amountFirstPair);
             dispatch(updateAccountValue(newAccountValue));
-            setTimeout(() => {
-              dispatch(fetchTransactions(selectedAcc.id));
-            }, 300);
             setAmountFirstPair('');
             setAmountSecondPair('');
             setRate('');

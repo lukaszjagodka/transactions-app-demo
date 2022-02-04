@@ -68,10 +68,11 @@ export const accountsSlice = createSlice({
       localStorage.setItem('selectedAccount', JSON.stringify(payload));
       state.selectedAccount = payload;
     },
-    updateAccountValue: (state, { payload }: PayloadAction<number>) => {
+    updateAccountValue: (state, action) => {
       const selectedAccount: string | null = localStorage.getItem('selectedAccount');
       if (selectedAccount) {
-        const { accountValue } = JSON.parse(selectedAccount);
+        const { accountValue, id } = JSON.parse(selectedAccount);
+        post({ accountValue, id }, 'accounts/updateAccountValue');
         state.accountValue = accountValue;
       }
     },
