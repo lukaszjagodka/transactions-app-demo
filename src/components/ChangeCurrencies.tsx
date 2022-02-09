@@ -17,8 +17,10 @@ import { IAccountsState, TPair } from '../types/types';
 
 const ChangeCurrencies = function () {
   const dispatch = useDispatch();
-  const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
-  const baseOfRates = useSelector((state: IAccountsState) => state.accounts.currencyString);
+  const { selectedAcc, baseOfRates } = useSelector((state: IAccountsState) => ({
+    selectedAcc: state.accounts.selectedAccount,
+    baseOfRates: state.accounts.currencyString,
+  }));
   const selectedAccount: string | null = localStorage.getItem('selectedAccount');
   const [rate, setRate] = useState<string>('');
 
@@ -32,8 +34,8 @@ const ChangeCurrencies = function () {
   const [amountSecondPair, setAmountSecondPair] = useState<number | string>('');
   const [currSecondPair, setCurrencySecondPair] = useState<string>('USD');
 
-  const findPairInArray = function (base: any) {
-    const actualPair = JSON.parse(base).filter((currency: any) => currency.pair === `${currFirstPair}/${currSecondPair}`);
+  const findPairInArray = function (base: string) {
+    const actualPair = JSON.parse(base).filter((currency: TPair) => currency.pair === `${currFirstPair}/${currSecondPair}`);
     return actualPair;
   };
 

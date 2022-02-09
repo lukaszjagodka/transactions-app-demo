@@ -18,7 +18,7 @@ export const initialState: ITransactionsState = {
 export const fetchTransactions = createAsyncThunk(
   'transactions/fetchTransactions',
   async (id: number) => {
-    const data = await get(`transactions?key=${id}`);
+    const data = await get(`transactions?id=${id}`);
     return data;
   },
 );

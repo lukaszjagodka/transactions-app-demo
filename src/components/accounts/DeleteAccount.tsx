@@ -69,7 +69,7 @@ class DeleteAccount extends Component <TProps, TState> {
           open: true,
           accuntMatches: 1,
         });
-        removeAccount({ id });
+        removeAccount(id);
         setTimeout(() => logOut(), 3000);
       } else {
         this.setState({

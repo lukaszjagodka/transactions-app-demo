@@ -7,7 +7,7 @@ import './App.css';
 import { fetchRates } from './components/accounts/accountsSlice';
 
 type TProps = {
-  getRates: any
+  getRates: Function
 }
 
 class App extends Component <TProps, {}> {
