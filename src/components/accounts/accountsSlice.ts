@@ -63,13 +63,17 @@ export const removeAccount = createAsyncThunk<void, number, {state: IState }>(
   },
 );
 
+export const createAccount = createAsyncThunk<void, Partial<IAccount>, {}>(
+  'accounts/fetchAccounts',
+  async (payload) => {
+    post(payload, 'accounts');
+  },
+);
+
 export const accountsSlice = createSlice({
   name: 'accounts',
   initialState,
   reducers: {
-    createAccount: ({ accounts }, { payload }: PayloadAction<Partial<IAccount>>) => {
-      post(payload, 'accounts');
-    },
     selectAccount: (state, { payload }: PayloadAction<IAccount>) => {
       localStorage.setItem('selectedAccount', JSON.stringify(payload));
       state.selectedAccount = payload;
@@ -117,7 +121,6 @@ export const accountsSlice = createSlice({
 });
 
 export const {
-  createAccount,
   selectAccount,
   updateAccountValue,
 } = accountsSlice.actions;
