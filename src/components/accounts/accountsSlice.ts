@@ -1,10 +1,11 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
+/* eslint-disable consistent-return */
 /* eslint-disable no-console */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAccount, TFetchAccounts } from '../../types/types';
 import { get } from '../../helpers/fetch/get';
 import { post } from '../../helpers/fetch/post';
+import { put } from '../../helpers/fetch/put';
 import { deleteAccount } from '../../helpers/fetch/delete';
 
 interface IState {
@@ -53,20 +54,34 @@ export const fetchAccounts = createAsyncThunk(
   },
 );
 
-export const removeAccount = createAsyncThunk<void, number, {state: IState }>(
+export const removeAccount = createAsyncThunk<void, number, {}>(
   'accounts/removeAccount',
-  async (id, { getState }) => {
-    const { accounts } = getState();
-    deleteAccount(`accounts?id=${id}`);
-    const index = accounts.findIndex((account) => account.id === id);
-    if (index !== -1) { accounts.splice(index, 1); }
+  async (id) => {
+    try {
+      await deleteAccount(`accounts?id=${id}`);
+    } catch (error) {
+      console.log(error);
+    }
   },
 );
 
 export const createAccount = createAsyncThunk<void, Partial<IAccount>, {}>(
-  'accounts/fetchAccounts',
+  'accounts/createAccount',
   async (payload) => {
-    post(payload, 'accounts');
+    await post(payload, 'accounts');
+  },
+);
+
+export const updateAccountValue = createAsyncThunk< any, { actualBalance: number, accountId: number }, {}>(
+  'accounts/updateAccountValue',
+  async (object, thunkAPI) => {
+    try {
+      const { actualBalance, accountId } = object;
+      await put({ actualBalance }, `accounts?id=${accountId}`);
+      thunkAPI.dispatch(updateValue(actualBalance));
+    } catch (error) {
+      console.log(error);
+    }
   },
 );
 
@@ -78,21 +93,22 @@ export const accountsSlice = createSlice({
       localStorage.setItem('selectedAccount', JSON.stringify(payload));
       state.selectedAccount = payload;
     },
-    updateAccountValue: (state, action) => {
-      const selectedAccount: string | null = localStorage.getItem('selectedAccount');
-      if (selectedAccount) {
-        const { accountValue, id } = JSON.parse(selectedAccount);
-        post({ accountValue, id }, 'accounts/updateAccountValue');
-        state.accountValue = accountValue;
-      }
+    updateValue: (state, { payload }: PayloadAction<number>) => {
+      state.accountValue = payload;
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(removeAccount.fulfilled, ({ accounts }, action) => {
+        const index = accounts.findIndex((account) => account.id === action.meta.arg);
+        if (index !== -1) { accounts.splice(index, 1); }
+      })
+      .addCase(createAccount.fulfilled, (state, action) => {
+      })
       .addCase(fetchRates.pending, (state, action) => {
         state.statusFetchRates = 'loading';
       })
-      .addCase(fetchRates.fulfilled, (state, { payload }: PayloadAction<any>) => {
+      .addCase(fetchRates.fulfilled, (state, { payload }: PayloadAction<string>) => {
         state.statusFetchRates = 'successed';
         state.currencyString = payload;
       })
@@ -122,5 +138,5 @@ export const accountsSlice = createSlice({
 
 export const {
   selectAccount,
-  updateAccountValue,
+  updateValue,
 } = accountsSlice.actions;
