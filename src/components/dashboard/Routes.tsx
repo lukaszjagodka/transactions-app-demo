@@ -29,7 +29,7 @@ class DRoutes extends PureComponent<TProps> {
       <div style={{ ...sectionStyle }}>
         <Navbar />
         <Routes>
-          <Route path="/a/:accountId" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/a/:account" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/" element={<PrivateRoute><ListOfAccounts /></PrivateRoute>} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>

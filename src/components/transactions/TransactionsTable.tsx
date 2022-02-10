@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import { useSelector } from 'react-redux';
-import { ITransactionsState, IAccountsState } from '../../types/types';
+import { ITransactionsState, IAccountsState, TTransaction } from '../../types/types';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,17 +31,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const TransactionTable = function () {
-  let rows: any[] = [];
   const transactions = useSelector((state: ITransactionsState) => state.transactions.transactions);
-  const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
-  const transactionsLS: string | null = localStorage.getItem('accountsTransactions');
-
-  if (transactionsLS !== null) {
-    const transactionsFromLocalStorageParsed = JSON.parse(transactionsLS);
-    rows = transactionsFromLocalStorageParsed.filter((x:any) => x.account === selectedAcc.id);
-  } else {
-    rows = transactions.filter((x:any) => x.account === selectedAcc.id);
-  }
+  const selectedAccount = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
+  const filteredTransactions = transactions.filter((transaction: TTransaction) => transaction.name === selectedAccount.name);
 
   return (
     <TableContainer component={Paper}>
@@ -53,20 +45,22 @@ const TransactionTable = function () {
             <StyledTableCell align="left">Account</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
+            <StyledTableCell align="left">Rate</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {filteredTransactions.map((row) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
                 {row.id}
               </StyledTableCell>
               <StyledTableCell align="left">{row.date}</StyledTableCell>
-              <StyledTableCell align="left">{row.account}</StyledTableCell>
+              <StyledTableCell align="left">{row.name}</StyledTableCell>
               <StyledTableCell align="right">{row.amountFirstPair}</StyledTableCell>
               <StyledTableCell align="left">{row.currencyFirstPair}</StyledTableCell>
+              <StyledTableCell align="left">{row.rate}</StyledTableCell>
               <StyledTableCell align="right">{row.amountSecondPair}</StyledTableCell>
               <StyledTableCell align="left">{row.currencySecondPair}</StyledTableCell>
             </StyledTableRow>

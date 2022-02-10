@@ -6,7 +6,9 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { Divider } from '@mui/material';
 import TransactionTable from '../transactions/TransactionsTable';
+import { fetchTransactions } from '../transactions/transactionsSlice';
 import ChangeCurrencies from '../ChangeCurrencies';
+import { IAccount } from '../../types/types';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -17,10 +19,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 type TProps = {
   accountValueRedux: number,
+  selectedAccount: IAccount,
+  getTransactions: any
 }
 
 type TState = {
-  id: string,
+  id: number,
   accountNumber: number,
   accountValue: number,
   currency: string,
@@ -30,7 +34,7 @@ class Dashboard extends Component <TProps, TState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      id: '',
+      id: 0,
       accountNumber: 0,
       accountValue: 0,
       currency: '',
@@ -42,12 +46,14 @@ class Dashboard extends Component <TProps, TState> {
   }
 
   initialize = () => {
+    const { getTransactions } = this.props;
     const retObj: string | null = localStorage.getItem('selectedAccount');
     if (retObj) {
       const selectedAccountObj = JSON.parse(retObj);
       const {
         id, accountNumber, accountValue, currency,
       } = selectedAccountObj;
+      getTransactions(id);
       this.setState({
         id,
         accountNumber,
@@ -112,13 +118,15 @@ class Dashboard extends Component <TProps, TState> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-});
-
 function mapStateToProps(state: any) {
   return {
     accountValueRedux: state.accounts.accountValue,
+    selectedAccount: state.accounts.selectedAccount,
   };
 }
+
+const mapDispatchToProps = (dispatch: any) => ({
+  getTransactions: (id: number) => dispatch(fetchTransactions(id)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

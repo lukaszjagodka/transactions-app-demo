@@ -8,15 +8,17 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import List from '@mui/material/List';
 import { useSelector, useDispatch } from 'react-redux';
 import AddAccount from './AddAccount';
-import { selectAccount } from './accountsSlice';
+import { fetchAccounts, selectAccount } from './accountsSlice';
 import { IAccount, IAccountsState } from '../../types/types';
 import AccountLabel from './AccountLabel';
 
 const ListOfAccounts = function () {
   const dispatch = useDispatch();
-  const accounts = useSelector((state: IAccountsState) => state.accounts.accounts);
-  const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
-  const [isAccountLS, setIsAccountLS] = useState<boolean>(false);
+  const { accounts, selectedAcc, accountsStatus } = useSelector((state: IAccountsState) => ({
+    accounts: state.accounts.accounts,
+    selectedAcc: state.accounts.selectedAccount,
+    accountsStatus: state.accounts.statusFetchAccounts,
+  }));
   const [isList, setIsList] = useState<boolean>(true);
   const [addForm, setAddForm] = useState<boolean>(false);
   const [listOfAccounts, setListOfAccounts] = useState<IAccount[]>(accounts);
@@ -38,27 +40,26 @@ const ListOfAccounts = function () {
     setIsList(e);
   };
 
-  const retrievedAccountsObject: string | null = localStorage.getItem('accounts');
-  if (retrievedAccountsObject) {
-    const accountsFromLocalStorage = JSON.parse(retrievedAccountsObject);
-    if (accountsFromLocalStorage.length > 2 && !isAccountLS) {
-      setIsAccountLS(true);
-      setListOfAccounts(accountsFromLocalStorage);
+  useEffect(() => {
+    if (accountsStatus === 'idle') {
+      dispatch(fetchAccounts());
     }
-  }
+  }, []);
 
   useEffect(() => {
-    setIsAccountLS(false);
-  }, [isAccountLS]);
+    if (accountsStatus === 'successed') {
+      setListOfAccounts(accounts);
+    }
+  }, [accountsStatus]);
 
   const retrievedSelectedAccObject: string | null = localStorage.getItem('selectedAccount');
   if (retrievedSelectedAccObject) {
     const {
-      id, accountNumber, accountValue, currency,
+      id, name, accountNumber, accountValue, currency, createdAt,
     } = JSON.parse(retrievedSelectedAccObject);
-    if (selectedAcc.id === '') {
+    if (selectedAcc.name === '') {
       dispatch(selectAccount({
-        id, accountNumber, accountValue, currency,
+        id, name, accountNumber, accountValue, currency, createdAt,
       }));
     }
   }
@@ -86,16 +87,10 @@ const ListOfAccounts = function () {
             <DialogContent>
               <List component="span">
                 {
-                listOfAccounts.length > 2 ? (
-                  listOfAccounts.slice(0).reverse().map((acc: any) => (
+                  listOfAccounts.map((acc: any) => (
                     <AccountLabel key={acc.id} account={acc} closeList={handleCloseList} />
                   ))
-                ) : (
-                  accounts.slice(0).reverse().map((acc: any) => (
-                    <AccountLabel key={acc.id} account={acc} closeList={handleCloseList} />
-                  ))
-                )
-              }
+                }
               </List>
             </DialogContent>
           </Dialog>

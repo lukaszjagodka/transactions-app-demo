@@ -1,78 +1,142 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAccount, TCreateAccounts } from '../../types/types';
+/* eslint-disable consistent-return */
+/* eslint-disable no-console */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IAccount, TFetchAccounts } from '../../types/types';
+import { get } from '../../helpers/fetch/get';
+import { post } from '../../helpers/fetch/post';
+import { put } from '../../helpers/fetch/put';
+import { deleteAccount } from '../../helpers/fetch/delete';
 
-export interface IState {
+interface IState {
   accounts: Array<IAccount>,
   selectedAccount: IAccount,
-  accountValue: number
+  accountValue: number,
+  statusFetchAccounts: String,
+  statusFetchRates: String,
+  currencyString: String
 }
 
 export const initialState: IState = {
-  accounts: [
-    {
-      id: 'Demo-account-pzc38tfeo', accountNumber: 603975430160344, accountValue: 15000, currency: 'PLN',
-    },
-    {
-      id: 'Demo-account-m8fpdawbi', accountNumber: 152573100742264, accountValue: 6000, currency: 'USD',
-    },
-  ],
+  accounts: [],
+  statusFetchAccounts: 'idle',
+  statusFetchRates: 'idle',
   selectedAccount: {
-    id: '',
+    id: 0,
+    name: '',
     accountNumber: 0,
     accountValue: 0,
     currency: '',
+    createdAt: '',
   },
   accountValue: 0,
+  currencyString: '',
 };
+
+export const fetchRates = createAsyncThunk(
+  'accounts/fetchRates',
+  async () => {
+    try {
+      const json = await get('rates');
+      const { currencyString } = json.data;
+      return currencyString;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
+
+export const fetchAccounts = createAsyncThunk(
+  'accounts/fetchAccounts',
+  async () => {
+    const data = await get('accounts');
+    return data;
+  },
+);
+
+export const removeAccount = createAsyncThunk<void, number, {}>(
+  'accounts/removeAccount',
+  async (id) => {
+    try {
+      await deleteAccount(`accounts?id=${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
+
+export const createAccount = createAsyncThunk<void, Partial<IAccount>, {}>(
+  'accounts/createAccount',
+  async (payload) => {
+    await post(payload, 'accounts');
+  },
+);
+
+export const updateAccountValue = createAsyncThunk< any, { actualBalance: number, accountId: number }, {}>(
+  'accounts/updateAccountValue',
+  async (object, thunkAPI) => {
+    try {
+      const { actualBalance, accountId } = object;
+      await put({ actualBalance }, `accounts?id=${accountId}`);
+      thunkAPI.dispatch(updateValue(actualBalance));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
 
 export const accountsSlice = createSlice({
   name: 'accounts',
   initialState,
   reducers: {
-    createAccount: ({ accounts }, { payload }: PayloadAction<TCreateAccounts>) => {
-      const accountsFromLS: string | null = localStorage.getItem('accounts');
-      if (accountsFromLS) {
-        localStorage.setItem('accounts', JSON.stringify([...accounts, payload]));
-      } else {
-        localStorage.setItem('accounts', JSON.stringify([...initialState.accounts, payload]));
-      }
-      accounts.push(payload);
-    },
-    removeAccount: ({ accounts }, { payload }: PayloadAction<string>) => {
-      const accountsLocalStorage: string | null = localStorage.getItem('accounts');
-      if (accountsLocalStorage) {
-        const listOfAccounts = JSON.parse(accountsLocalStorage);
-        const index = listOfAccounts.findIndex((account: any) => account.id === payload);
-        if (index !== -1) { listOfAccounts.splice(index, 1); }
-        localStorage.setItem('accounts', JSON.stringify(listOfAccounts));
-      }
-      const accountsTransactions: string | null = localStorage.getItem('accountsTransactions');
-      if (accountsTransactions) {
-        const listOfTransactions = JSON.parse(accountsTransactions);
-        const newListTransatcion = listOfTransactions.filter((transaction: any) => transaction.account !== payload);
-        localStorage.setItem('accountsTransactions', JSON.stringify(newListTransatcion));
-      }
-      const index = accounts.findIndex((account) => account.id === payload);
-      if (index !== -1) { accounts.splice(index, 1); }
-    },
     selectAccount: (state, { payload }: PayloadAction<IAccount>) => {
       localStorage.setItem('selectedAccount', JSON.stringify(payload));
       state.selectedAccount = payload;
     },
-    updateAccountValue: (state, { payload }: PayloadAction<number>) => {
-      const selectedAccount: string | null = localStorage.getItem('selectedAccount');
-      if (selectedAccount) {
-        const { accountValue } = JSON.parse(selectedAccount);
-        state.accountValue = accountValue;
-      }
+    updateValue: (state, { payload }: PayloadAction<number>) => {
+      state.accountValue = payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(removeAccount.fulfilled, ({ accounts }, action) => {
+        const index = accounts.findIndex((account) => account.id === action.meta.arg);
+        if (index !== -1) { accounts.splice(index, 1); }
+      })
+      .addCase(createAccount.fulfilled, (state, action) => {
+      })
+      .addCase(fetchRates.pending, (state, action) => {
+        state.statusFetchRates = 'loading';
+      })
+      .addCase(fetchRates.fulfilled, (state, { payload }: PayloadAction<string>) => {
+        state.statusFetchRates = 'successed';
+        state.currencyString = payload;
+      })
+      .addCase(fetchRates.rejected, (state, { payload }) => {
+        state.statusFetchRates = 'failed';
+      })
+      .addCase(fetchAccounts.pending, (state, action) => {
+        state.statusFetchAccounts = 'loading';
+      })
+      .addCase(fetchAccounts.fulfilled, (state, { payload }: PayloadAction<TFetchAccounts>) => {
+        state.statusFetchAccounts = 'successed';
+        if (payload) {
+          const { data } = payload;
+          state.accounts.length = 0;
+          if (state.accounts.length !== data.length) {
+            data.forEach((element: any) => {
+              state.accounts.push(element);
+            });
+          }
+        }
+      })
+      .addCase(fetchAccounts.rejected, (state, { payload }) => {
+        state.statusFetchAccounts = 'failed';
+      });
   },
 });
 
 export const {
-  createAccount,
-  removeAccount,
   selectAccount,
-  updateAccountValue,
+  updateValue,
 } = accountsSlice.actions;

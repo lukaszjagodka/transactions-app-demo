@@ -9,8 +9,8 @@ import Container from '@mui/material/Container';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { setTimeout } from 'timers';
-import { removeAccount } from './accounts/accountsSlice';
-import { logOut } from '../helpers/logout';
+import { removeAccount } from './accountsSlice';
+import { logOut } from '../../helpers/logout';
 
 type TProps = {
   removeAccount: any
@@ -63,8 +63,8 @@ class DeleteAccount extends Component <TProps, TState> {
     const selectedAccount: string | null = localStorage.getItem('selectedAccount');
     if (selectedAccount) {
       const objSelectedAccount = JSON.parse(selectedAccount);
-      const { id } = objSelectedAccount;
-      if (id.toLowerCase() === accountToDelete.toLowerCase()) {
+      const { name, id } = objSelectedAccount;
+      if (name.toLowerCase() === accountToDelete.toLowerCase()) {
         this.setState({
           open: true,
           accuntMatches: 1,
@@ -155,13 +155,7 @@ class DeleteAccount extends Component <TProps, TState> {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
-  removeAccount: (id: string) => dispatch(removeAccount(id)),
+  removeAccount: (id: number) => dispatch(removeAccount(id)),
 });
 
-function mapStateToProps() {
-  return {
-
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteAccount);
+export default connect(null, mapDispatchToProps)(DeleteAccount);

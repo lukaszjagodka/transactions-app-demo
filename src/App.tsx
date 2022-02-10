@@ -1,11 +1,19 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Dashboard from './components/dashboard/Routes';
-import { fetchRates } from './helpers/fetchRates';
 import './App.css';
+import { fetchRates } from './components/accounts/accountsSlice';
 
-class App extends Component {
+type TProps = {
+  getRates: Function
+}
+
+class App extends Component <TProps, {}> {
   componentDidMount() {
-    fetchRates();
+    const { getRates } = this.props;
+    getRates();
   }
 
   render() {
@@ -17,4 +25,8 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch: any) => ({
+  getRates: () => dispatch(fetchRates()),
+});
+
+export default connect(null, mapDispatchToProps)(App);

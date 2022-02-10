@@ -15,7 +15,7 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { logOut } from '../helpers/logout';
 import { IAccountsState } from '../types/types';
-import DeleteAccount from './DeleteAccount';
+import DeleteAccount from './accounts/DeleteAccount';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -47,13 +47,6 @@ const AccountMenu = function () {
     setAnchorEl(null);
   };
 
-  const handleOpenSettings = () => {
-    setOpenSettings(true);
-  };
-  const handleCloseSettings = () => {
-    setOpenSettings(false);
-  };
-
   const makeKey = () => {
     const temporaryKey: string | null = localStorage.getItem('temporaryKey');
     if (!temporaryKey) {
@@ -61,10 +54,6 @@ const AccountMenu = function () {
       localStorage.setItem('temporaryKey', JSON.stringify({ temporaryKey: 'xxxxxx' }));
       window.location.reload();
     }
-  };
-
-  const settings = () => {
-    setOpenSettings(true);
   };
 
   const temporaryKey: string | null = localStorage.getItem('temporaryKey');
@@ -81,7 +70,7 @@ const AccountMenu = function () {
       const selectedAccountObj = JSON.parse(retrievedObject);
       const name = selectedAccountObj.id;
       const { length } = name;
-      setUserId(selectedAccountObj.id.substring(13, length));
+      setUserId(selectedAccountObj.name.substring(13, length));
     }
   }
 
@@ -90,7 +79,7 @@ const AccountMenu = function () {
       <Modal
         hideBackdrop
         open={openSettings}
-        onClose={handleCloseSettings}
+        onClose={() => setOpenSettings(false)}
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
@@ -103,7 +92,7 @@ const AccountMenu = function () {
           <DeleteAccount />
           <br />
           <Divider />
-          <Button style={{ top: '20px' }} onClick={handleCloseSettings}>Close</Button>
+          <Button style={{ top: '20px' }} onClick={() => setOpenSettings(false)}>Close</Button>
         </Box>
       </Modal>
       { retrievedObject ? (
@@ -164,7 +153,7 @@ const AccountMenu = function () {
               My account
             </MenuItem>
             <Divider />
-            <MenuItem onClick={settings}>
+            <MenuItem onClick={() => setOpenSettings(true)}>
               <ListItemIcon>
                 <SettingsIc fontSize="small" />
               </ListItemIcon>

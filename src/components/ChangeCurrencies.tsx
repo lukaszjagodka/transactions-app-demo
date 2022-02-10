@@ -11,15 +11,17 @@ import Button from '@mui/material/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { initialCurrenciesId } from '../helpers/initialState';
 import { matchExpression } from '../helpers/matchExpression';
-import { createTransaction } from './transactions/transactionsSlice';
+import { createTransaction, fetchTransactions } from './transactions/transactionsSlice';
 import { updateAccountValue } from './accounts/accountsSlice';
 import { IAccountsState, TPair } from '../types/types';
 
 const ChangeCurrencies = function () {
   const dispatch = useDispatch();
-  const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
+  const { selectedAcc, baseOfRates } = useSelector((state: IAccountsState) => ({
+    selectedAcc: state.accounts.selectedAccount,
+    baseOfRates: state.accounts.currencyString,
+  }));
   const selectedAccount: string | null = localStorage.getItem('selectedAccount');
-  const actual3xItem: string | null = localStorage.getItem('actual3x');
   const [rate, setRate] = useState<string>('');
 
   // FIRST PAIR
@@ -32,8 +34,8 @@ const ChangeCurrencies = function () {
   const [amountSecondPair, setAmountSecondPair] = useState<number | string>('');
   const [currSecondPair, setCurrencySecondPair] = useState<string>('USD');
 
-  const findPairInArray = function (xItem: string) {
-    const actualPair = JSON.parse(xItem).filter((currency: any) => currency.pair === `${currFirstPair}/${currSecondPair}`);
+  const findPairInArray = function (base: string) {
+    const actualPair = JSON.parse(base).filter((currency: TPair) => currency.pair === `${currFirstPair}/${currSecondPair}`);
     return actualPair;
   };
 
@@ -45,8 +47,8 @@ const ChangeCurrencies = function () {
   };
 
   useEffect(() => {
-    if (amountFirstPair !== '' && currFirstPair !== currSecondPair && actual3xItem) {
-      const actualPair = findPairInArray(actual3xItem);
+    if (amountFirstPair !== '' && currFirstPair !== currSecondPair && baseOfRates) {
+      const actualPair = findPairInArray(baseOfRates);
       if (actualPair.length) {
         setRate(actualPair[0].value);
         const amountSP = convertCurrency(amountFirstPair, actualPair);
@@ -59,22 +61,22 @@ const ChangeCurrencies = function () {
     if (selectedAccount) {
       const { accountValue, accountNumber } = JSON.parse(selectedAccount);
       if (amountFirstPair < accountValue) {
-        if (amountFirstPair && currFirstPair !== currSecondPair && actual3xItem) {
-          const actualPair = findPairInArray(actual3xItem);
+        if (amountFirstPair && currFirstPair !== currSecondPair && baseOfRates) {
+          const actualPair = findPairInArray(baseOfRates);
           if (!actualPair.length) {
             alert('We havent this rate in our data. Please change currencies.');
           } else {
             const actualBalance = accountValue - Number(amountFirstPair);
             const updatedSelectedAccount = {
-              id: selectedAcc.id, accountNumber, accountValue: actualBalance, currency: currFirstPair,
+              id: selectedAcc.id, name: selectedAcc.name, accountNumber, accountValue: actualBalance, currency: currFirstPair,
             };
             localStorage.setItem('selectedAccount', JSON.stringify(updatedSelectedAccount));
             const amountSP = convertCurrency(amountFirstPair, actualPair);
             dispatch(createTransaction({
-              account: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, amountSecondPair: amountSP, currencySecondPair: currSecondPair,
+              name: selectedAcc.name, account: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, rate: Number(parseFloat(actualPair[0].value).toFixed(4)), amountSecondPair: amountSP, currencySecondPair: currSecondPair,
             }));
-            const newAccountValue = Number(amountFirstPair);
-            dispatch(updateAccountValue(newAccountValue));
+            const accountId = selectedAcc.id;
+            dispatch(updateAccountValue({ actualBalance, accountId }));
             setAmountFirstPair('');
             setAmountSecondPair('');
             setRate('');

@@ -1,23 +1,35 @@
 export interface IAccount {
-  id: string,
+  id: number
+  name: string,
   accountNumber: number,
   accountValue: number,
-  currency: string
+  currency: string,
+  createdAt: string
+}
+
+export type TFetchAccounts = {
+  success: string,
+  data: Array<IAccount>
 }
 
 export interface IAccountsState {
   accounts: {
     accounts: Array<IAccount>,
-    selectedAccount: IAccount
+    selectedAccount: IAccount,
+    statusFetchAccounts: string,
+    statusFetchRates: string,
+    currencyString: string,
   }
 }
 
 export type TTransaction = {
-  account: string,
+  account: number,
+  name: string,
   id: number,
   date: string,
   amountFirstPair: number,
   currencyFirstPair: string,
+  rate: number,
   amountSecondPair: number,
   currencySecondPair: string,
 }
@@ -26,13 +38,6 @@ export interface ITransactionsState {
   transactions: {
     transactions: Array<TTransaction>,
   }
-}
-
-export type TCreateAccounts = {
-  id: string,
-  accountNumber: number,
-  accountValue: number,
-  currency: string,
 }
 
 export type TPair = {

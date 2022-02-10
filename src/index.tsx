@@ -11,8 +11,8 @@ import App from './App';
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [logger],
-  // devTools: false
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(/* logger */),
+  devTools: false,
 });
 
 ReactDOM.render(

@@ -1,42 +1,27 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { generateAccountNumber } from '../../helpers/generateAccountDate';
 import { TTransaction } from '../../types/types';
+import { post } from '../../helpers/fetch/post';
+import { get } from '../../helpers/fetch/get';
 
 export interface ITransactionsState {
   transactions: Array<TTransaction>
+  fetchAccounts: string
 }
 
 export const initialState: ITransactionsState = {
-  transactions: [
-    {
-      account: 'Demo-account-m8fpdawbi',
-      id: 849583779889844,
-      date: '12/13/2021, 22:29:12',
-      amountFirstPair: 333,
-      currencyFirstPair: 'USD',
-      amountSecondPair: 1363.97,
-      currencySecondPair: 'PLN',
-    },
-    {
-      account: 'Demo-account-m8fpdawbi',
-      id: 874543213456123,
-      date: '12/12/2021, 22:25:12',
-      amountFirstPair: 222,
-      currencyFirstPair: 'USD',
-      amountSecondPair: 196.65,
-      currencySecondPair: 'EUR',
-    },
-    {
-      account: 'Demo-account-pzc38tfeo',
-      id: 874543213456666,
-      date: '12/12/2021, 22:26:12',
-      amountFirstPair: 789,
-      currencyFirstPair: 'USD',
-      amountSecondPair: 196.65,
-      currencySecondPair: 'EUR',
-    },
-  ],
+  transactions: [],
+  fetchAccounts: 'idle',
 };
+
+export const fetchTransactions = createAsyncThunk(
+  'transactions/fetchTransactions',
+  async (id: number) => {
+    const data = await get(`transactions?id=${id}`);
+    return data;
+  },
+);
 
 export const transactionsSlice = createSlice({
   name: 'transactions',
@@ -44,34 +29,62 @@ export const transactionsSlice = createSlice({
   reducers: {
     createTransaction: {
       reducer: (state, { payload }: PayloadAction<TTransaction>) => {
-        const transactionsLS: string | null = localStorage.getItem('accountsTransactions');
-        if (!transactionsLS) {
-          localStorage.setItem('accountsTransactions', JSON.stringify([...initialState.transactions, payload]));
-        } else {
-          const retrivedTransactionsLS: string | null = localStorage.getItem('accountsTransactions');
-          if (retrivedTransactionsLS) {
-            const oldArray = JSON.parse(retrivedTransactionsLS);
-            localStorage.setItem('accountsTransactions', JSON.stringify([...oldArray, payload]));
-          }
-        }
+        post(payload, 'transactions');
         state.transactions.push(payload);
       },
       prepare: ({
-        account, amountFirstPair, currencyFirstPair, amountSecondPair, currencySecondPair,
-      }: {account: string, amountFirstPair: number, currencyFirstPair: string, amountSecondPair: number, currencySecondPair: string}) => ({
+        account,
+        name,
+        amountFirstPair,
+        currencyFirstPair,
+        rate,
+        amountSecondPair,
+        currencySecondPair,
+      }: {
+        account: number,
+        name: string,
+        amountFirstPair: number,
+        currencyFirstPair: string,
+        rate: number,
+        amountSecondPair: number,
+        currencySecondPair: string
+      }) => ({
         payload: {
           account,
+          name,
           id: generateAccountNumber(),
           date: new Date().toLocaleString(undefined, {
             year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false, minute: '2-digit', second: '2-digit', timeZone: 'Europe/Warsaw',
           }),
           amountFirstPair,
           currencyFirstPair,
+          rate,
           amountSecondPair,
           currencySecondPair,
         },
       }),
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTransactions.pending, (state, action) => {
+        state.fetchAccounts = 'loading';
+      })
+      .addCase(fetchTransactions.fulfilled, (state, { payload }: PayloadAction<any>) => {
+        state.fetchAccounts = 'successed';
+        if (payload) {
+          const { response } = payload;
+          state.transactions.length = 0;
+          if (state.transactions.length !== response.length) {
+            response.forEach((element: any) => {
+              state.transactions.push(element);
+            });
+          }
+        }
+      })
+      .addCase(fetchTransactions.rejected, (state, { payload }) => {
+        state.fetchAccounts = 'failed';
+      });
   },
 });
 
