@@ -19,20 +19,9 @@ const AccountLabel = function ({ account, closeList }: TProps) {
   };
 
   const handleShowAccount = (selectedAccount: IAccount) => {
-    const {
-      id,
-      name,
-      accountNumber,
-      accountValue,
-      currency,
-    } = selectedAccount;
     localStorage.setItem('selectedAccount', JSON.stringify(account.id));
     dispatch(selectAccount({
-      id,
-      name,
-      accountNumber,
-      accountValue,
-      currency,
+      ...selectedAccount,
       createdAt: '',
     }));
     closeListFrmChild();
