@@ -75,8 +75,8 @@ const ChangeCurrencies = function () {
             dispatch(createTransaction({
               name: selectedAcc.name, account: selectedAcc.id, amountFirstPair: Number(amountFirstPair), currencyFirstPair: currFirstPair, rate: Number(parseFloat(actualPair[0].value).toFixed(4)), amountSecondPair: amountSP, currencySecondPair: currSecondPair,
             }));
-            const newAccountValue = Number(amountFirstPair);
-            dispatch(updateAccountValue(newAccountValue));
+            const accountId = selectedAcc.id;
+            dispatch(updateAccountValue({ actualBalance, accountId }));
             setAmountFirstPair('');
             setAmountSecondPair('');
             setRate('');
