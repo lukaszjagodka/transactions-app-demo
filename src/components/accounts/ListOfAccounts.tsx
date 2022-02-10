@@ -14,9 +14,11 @@ import AccountLabel from './AccountLabel';
 
 const ListOfAccounts = function () {
   const dispatch = useDispatch();
-  const accounts = useSelector((state: IAccountsState) => state.accounts.accounts);
-  const selectedAcc = useSelector((state: IAccountsState) => state.accounts.selectedAccount);
-  const accountsStatus = useSelector((state: IAccountsState) => state.accounts.statusFetchAccounts);
+  const { accounts, selectedAcc, accountsStatus } = useSelector((state: IAccountsState) => ({
+    accounts: state.accounts.accounts,
+    selectedAcc: state.accounts.selectedAccount,
+    accountsStatus: state.accounts.statusFetchAccounts,
+  }));
   const [isList, setIsList] = useState<boolean>(true);
   const [addForm, setAddForm] = useState<boolean>(false);
   const [listOfAccounts, setListOfAccounts] = useState<IAccount[]>(accounts);
@@ -48,7 +50,7 @@ const ListOfAccounts = function () {
     if (accountsStatus === 'successed') {
       setListOfAccounts(accounts);
     }
-  });
+  }, [accountsStatus]);
 
   const retrievedSelectedAccObject: string | null = localStorage.getItem('selectedAccount');
   if (retrievedSelectedAccObject) {
@@ -85,7 +87,7 @@ const ListOfAccounts = function () {
             <DialogContent>
               <List component="span">
                 {
-                  listOfAccounts.slice(0).reverse().map((acc: any) => (
+                  listOfAccounts.map((acc: any) => (
                     <AccountLabel key={acc.id} account={acc} closeList={handleCloseList} />
                   ))
                 }
